@@ -15,6 +15,9 @@ class helloWorldTask(task):
         print("Test 4")
         #await(1000)
 
+    def schedula(self):
+        return (0, -1)
+
     async def tearDown(self):
         await(1000)
         pass #pass beacuese we dont have a tear down.
