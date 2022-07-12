@@ -21,3 +21,6 @@ class helloWorldTask(task):
     async def tearDown(self):
         await(1000)
         pass #pass beacuese we dont have a tear down.
+
+    def isAsync(self):
+        return False
