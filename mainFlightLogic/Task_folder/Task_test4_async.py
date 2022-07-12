@@ -22,3 +22,6 @@ class helloWorldTask(task):
     
     def schedula(self):
         return (0, -1)
+
+    def isAsync(self):
+        return True
