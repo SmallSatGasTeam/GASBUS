@@ -26,6 +26,7 @@ class taskManager:
                 print("run in start task")
                 self.FakeDataBase.append([task.getTaskUID(), int(time.time()), task.schedula()[1], task])
             task.startTask()
+            task.tearDown()
             await asyncio.sleep(1)
             
 
@@ -40,13 +41,16 @@ class taskManager:
                 self.__tasks.append((self.FakeDataBase[0][3].getPriority(), self.FakeDataBase[0][3]))
             await asyncio.sleep(1)
 
+    def getAysnc(self):
+        return [asyncio.create_task(self.schedular()), asyncio.create_task(self.start_All_Task())]
+
             
 
 
 
 async def main():
     tm = taskManager()
-    await asyncio.gather(asyncio.create_task(tm.start_All_Task()), asyncio.create_task(tm.schedular()))
+    await asyncio.gather(tm.getAysnc())
     
 if __name__ == "__main__":
     asyncio.run(main())
