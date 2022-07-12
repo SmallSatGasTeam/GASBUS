@@ -16,7 +16,7 @@ class taskManager:
         
     
     async def start_All_Task(self):
-        print("Task exicution started")
+        print("Task execution started")
         while(True):
             if(len(self.__tasks) == 0):
                 print("waitnig in start task")
