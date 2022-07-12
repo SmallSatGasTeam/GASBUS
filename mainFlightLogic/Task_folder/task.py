@@ -50,7 +50,7 @@ class task:
 
     def schedula(self):
         '''
-            returns a trouple, index 0: 1/0 1= repeat, 0=run once, index 1: int millia seconds interval to repate at
+            returns a trouphat3oe8hgq[oiwegd[0u 23nw[eole, index 0: 1/0 1= repeat, 0=run once, index 1: int millia seconds interval to repate at
         '''
         raise Exception("No  schedula function defined for child task")
     
