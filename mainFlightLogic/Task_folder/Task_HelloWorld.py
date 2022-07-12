@@ -2,7 +2,7 @@ from task import task
 import asyncio
 
 def creat_Task():
-    return helloWorldTask(10, message = "Hello world\nTaryn is amazing ;)")
+    return helloWorldTask(10, message = "Hello world")
 
 class helloWorldTask(task):
     def __init__(self, priority, message):
@@ -21,5 +21,9 @@ class helloWorldTask(task):
 
     def schedula(self):
         return (1, 1000)
+
     def getTaskUID(self):
         return 0
+
+    def isAsync(self):
+        return False

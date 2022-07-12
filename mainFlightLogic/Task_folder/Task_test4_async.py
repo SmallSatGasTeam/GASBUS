@@ -2,7 +2,7 @@ from task import task
 import asyncio
 
 def creat_Task():
-    return helloWorldTask(500)
+    return helloWorldTask(510)
 
 class helloWorldTask(task):
     def __init__(self, priority):
@@ -13,7 +13,7 @@ class helloWorldTask(task):
 
     async def startTask(self):
         while(True):
-            print("Test 4")
+            print("Test 4: This is an aysnc func")
             await(1000)
 
     async def tearDown(self):
