@@ -19,23 +19,26 @@ class taskManager:
         print("Task exicution started")
         while(True):
             if(len(self.__tasks) == 0):
+                print("waitnig in start task")
                 await asyncio.sleep(0.2)
             task = hq.heappop(self.__tasks)[1]
-            if(task.schedula == 1):
-                 self.FakeDataBase.append([task.getTaskUID, time.time, task.schedula[1], task])
+            if(task.schedula()[0] == 1):
+                print("run in start task")
+                self.FakeDataBase.append([task.getTaskUID(), int(time.time()), task.schedula()[1], task])
             task.startTask()
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(1)
             
 
     async def schedular(self):
         print("Schedular started")
         while (True):
             if(len(self.FakeDataBase) == 0):
+                print("waitnig in schedular")
                 await asyncio.sleep(0.20)
-            print(self.FakeDataBase)
-            if(time.time <= self.FakeDataBase[0][1] + self.FakeDataBase[0][2]):
+            if(time.time() <= self.FakeDataBase[0][1] + self.FakeDataBase[0][2]):
+                print("running in schedular")
                 self.__tasks.append((self.FakeDataBase[0][3].getPriority(), self.FakeDataBase[0][3]))
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(1)
 
             
 
@@ -43,11 +46,7 @@ class taskManager:
 
 async def main():
     tm = taskManager()
-    run=[]
-    run.append(asyncio.create_task(tm.start_All_Task()))
-    run.append(asyncio.create_task(tm.schedular()))
+    await asyncio.gather(asyncio.create_task(tm.start_All_Task()), asyncio.create_task(tm.schedular()))
     
 if __name__ == "__main__":
     asyncio.run(main())
-    while(True):
-        pass
