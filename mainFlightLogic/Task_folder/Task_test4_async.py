@@ -2,7 +2,7 @@ from task import task
 import asyncio
 
 def creat_Task():
-    return helloWorldTask(100)
+    return helloWorldTask(500)
 
 class helloWorldTask(task):
     def __init__(self, priority):
@@ -11,12 +11,14 @@ class helloWorldTask(task):
     def getPriority(self):
         return self.__priority
 
-    def startTask(self):
-        print("Test 1")
-        #await(1000)
+    async def startTask(self):
+        while(True):
+            print("Test 4")
+            await(1000)
 
     async def tearDown(self):
         await(1000)
         pass #pass beacuese we dont have a tear down.
-
-    #creating a merge conflit
+    
+    def schedula(self):
+        return (0, -1)
