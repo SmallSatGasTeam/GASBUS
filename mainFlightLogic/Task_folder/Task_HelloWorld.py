@@ -20,7 +20,7 @@ class helloWorldTask(task):
         pass #pass beacuese we dont have a tear down.
 
     def schedula(self):
-        return (1, 1000)
+        return (1, 1)
 
     def getTaskUID(self):
         return 0

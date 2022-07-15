@@ -1,5 +1,6 @@
 from task import task
 import asyncio
+import time
 
 def creat_Task():
     return helloWorldTask(510)
@@ -13,11 +14,11 @@ class helloWorldTask(task):
 
     async def startTask(self):
         while(True):
-            print("Test 4: This is an aysnc func")
-            await(1000)
+            print("Test 5: This is an aysnc func " + str(time.time()))
+            await asyncio.sleep(1)
 
     async def tearDown(self):
-        await(1000)
+        await asyncio.sleep(1)
         pass #pass beacuese we dont have a tear down.
     
     def schedula(self):
