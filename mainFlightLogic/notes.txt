@@ -1,0 +1,1 @@
+maybe we could do this https://packaging.python.org/en/latest/tutorials/packaging-projects/
