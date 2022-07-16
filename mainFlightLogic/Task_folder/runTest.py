@@ -3,10 +3,13 @@ import unittest
 
 class TestStringMethods(unittest.TestCase):
     def test_TaskManager(self):
-        infoString = open("Task_folder/systemInfo.txt", "r").read()
+        file = open("Task_folder/systemInfo.txt", "r")
+        infoString = file.read()
+        file.close()
         infoDiction = dict(x.split(":") for x in infoString.split("\n"))
         tm = taskManager()
-        self.assertEqual(self.__discovered_plugins, infoDiction["Plugin_count"])
+        self.assertEqual(int(infoDiction["Plugin_count"]), len(tm.getPlugins()))
+        self.assertEqual(len(tm.getPlugins()), len(tm.getTasks()))
 
     def test_isupper(self):
         self.assertTrue('FOO'.isupper())
