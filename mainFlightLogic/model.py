@@ -13,7 +13,7 @@ from objects.log import Log
 from objects.datum import Datum
 from objects.packet import Packet
 from objects.task import Task
-from objects.plugin import Plugin
+from plugins.plugin import Plugin
 
 class Model:
     '''
@@ -736,7 +736,7 @@ class Model:
             # format result as a list of task objects
             tasks = []
             for result in results:
-                tasks.append(Task.taskWithId(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8], result[9]))
+                tasks.append(Task.taskWithId(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8], result[9], runPluginId, runTaskId))
 
             return tasks
 

@@ -1,5 +1,5 @@
 '''
-This is the "plugin" object.
+This is the abstract "plugin" object.
 
 The plugin object requires an identifier. The plugin object also includes a pluginId that is assigned by the database. The identifier is a human understandable identifier for reporting purposes and to help make code using the plugin more readable.
 
@@ -29,14 +29,13 @@ class Plugin:
     '''
     public Plugin.newPlugin(identifier: string) -> Plugin
 
-    This is the class method for creating a new plugin.
+    This is used to create the class method for creating a new plugin.
     '''
-    @classmethod
-    def newPlugin(cls, identifier, runTaskId, runPluginId):
+    def newPlugin(identifier, runTaskId, runPluginId):
         from model import Model # import statement here to avoid circular import
         pluginId = Model.createPlugin(identifier, runTaskId, runPluginId)
 
-        return cls(pluginId, identifier)
+        return pluginId
 
     '''
     public Plugin.pluginWithId(pluginId: integer, identifier: string) -> Plugin

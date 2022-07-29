@@ -31,7 +31,7 @@ class Task:
 
     default constructor - never use this outside of the class, use the class methods instead
     '''
-    def __init__(self, taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active):
+    def __init__(self, taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, plugin):
         self.__taskId = taskId
         self.__priority = priority
         self.__pluginId = pluginId
@@ -42,8 +42,7 @@ class Task:
         self.__startTime = startTime
         self.__endTime = endTime
         self.__active = active
-
-        # TODO: set private plugin variable
+        self.__plugin = plugin
 
         Task.tasks.append(self)
 
@@ -57,7 +56,22 @@ class Task:
         from model import Model # import statement here to avoid circular import
         taskId = Model.createTask(priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, runTaskId, runPluginId)
 
-        return cls(taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active)
+        # TODO: get plugin from pluginId
+        plugin = None
+
+        return cls(taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, plugin)
+
+    '''
+    public Task.newTaskFromPlugin(priority: integer, plugin: plugin, previousTaskId: integer, nextTaskId: integer, addToQueueTime: integer, scheduledRunTime: integer, startTime: integer, endTime: integer, active: boolean, runTaskId: integer, runPluginId: integer) -> Task
+
+    This is the class method for creating a new task when the plugin has already been instantiated.
+    '''
+    @classmethod
+    def newTaskFromPlugin(cls, priority, plugin, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, runTaskId, runPluginId):
+        from model import Model # import statement here to avoid circular import
+        taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, runTaskId, runPluginId)
+
+        return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, plugin)
     
     '''
     public Task.taskWithId(taskId: integer, priority: integer, pluginId: integer, previousTaskId: integer, nextTaskId: integer, addToQueueTime: integer, scheduledRunTime: integer, startTime: integer, endTime: integer, active: boolean, runTaskId: integer, runPluginId: integer) -> Task
