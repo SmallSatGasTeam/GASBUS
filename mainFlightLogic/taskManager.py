@@ -22,7 +22,7 @@ class TaskManager:
         from plugins.startup import Startup
         from objects.task import Task
 
-        startupPlugin = Startup.newPlugin(0, 0)
+        startupPlugin = Startup.newPlugin(self, 0, 0)
         startupTask = Task.newTaskFromPlugin(0, startupPlugin, -1, -1, Model.createTimeStamp(), -1, -1, -1, True, 0, 0)
         self.__firstPriorityTask = startupTask
 
@@ -32,12 +32,10 @@ class TaskManager:
         activeTasks = Model.retrieveTasksByActive(True, 0, 0)
 
         for task in activeTasks:
-            # TODO: add task
+            # TODO: put all active unscheduled tasks into priority queue
+
+            # TODO: put all sheduled tasks in queue
             pass
-
-        # TODO: put all active unscheduled tasks into priority queue
-
-        # TODO: put all sheduled tasks in queue
 
         self.nextTask()
 
@@ -67,10 +65,23 @@ class TaskManager:
     This method is used to add a task to either the priority or scheduled queue.
     '''
     def addTask(self, task):
-        # TODO: check if task needs to be scheduled
-            # TODO: if necessary add task to the scheduled queue
-            # TODO: otherwise add task to the priority queue
-        pass
+        if task.getScheduledRunTime() < Model.createTimeStamp():
+            self.__addTaskToPriorityQueue(task)
+
+        else:
+            # TODO: schedule task
+            pass
+    
+    def __addTaskToPriorityQueue(self, task):
+        if self.__firstPriorityTask is None:
+            self.__firstPriorityTask = task
+        # check if the new task is hig
+        elif task.getPriority() < self.__firstPriorityTask.getPriority():
+            task.setNextTask(self.__firstPriorityTask)
+            self.__firstPriorityTask = task
+        else:
+            task.setNextTask(self.__firstPriorityTask)
+            self.__firstPriorityTask = task
     
 if __name__ == "__main__":
     # During testing, calling this task from the command line will create the task manager.

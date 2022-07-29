@@ -14,6 +14,8 @@ startTime is an integer available for getting and setting.
 endTime is an integer available for getting and setting.
 active is a boolean available for getting and setting.
 TODO: plugin is a plugin object available for getting.
+TODO: previousTask is a task object available for getting and setting.
+TODO: nextTask is a task object available for getting and setting.
 
 TODO: add task methods
 '''
@@ -43,10 +45,18 @@ class Task:
         self.__endTime = endTime
         self.__active = active
         
+        from model import Model # import statement here to avoid circular import
+
         # object properties
         self.__plugin = plugin
         self.__previousTask = None
         self.__nextTask = None
+
+        if previousTaskId != -1:
+            self.__previousTask = Model.retrieveTaskById(previousTaskId)
+        
+        if nextTaskId != -1:
+            self.__nextTask = Model.retrieveTaskById(nextTaskId)
 
         Task.tasks.append(self)
 
@@ -60,8 +70,8 @@ class Task:
         from model import Model # import statement here to avoid circular import
         taskId = Model.createTask(priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, runTaskId, runPluginId)
 
-        # TODO: get plugin from pluginId
-        plugin = None
+        # PluginId should always point to a valid plugin
+        plugin = Model.retrievePluginById(pluginId, runTaskId, runPluginId)
 
         return cls(taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, plugin)
 
@@ -89,8 +99,10 @@ class Task:
         if task is not None:
             return task
 
-        # TODO: get plugin from pluginId
-        plugin = None
+        from model import Model # import statement here to avoid circular import
+        
+        # PluginId should always point to a valid plugin
+        plugin = Model.retrievePluginById(pluginId, runTaskId, runPluginId)
 
         return cls(taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, plugin)
 
@@ -177,6 +189,11 @@ class Task:
         from model import Model # import statement here to avoid circular import
         if Model.updateTaskPreviousTaskId(self.__taskId, previousTaskId, runTaskId, runPluginId):
             self.__previousTaskId = previousTaskId
+            self.__previousTask = None
+
+            if previousTaskId != -1:
+                self.__previousTask = Model.retrieveTaskById(previousTaskId)
+
             return True
         
         return False
@@ -186,6 +203,11 @@ class Task:
         from model import Model # import statement here to avoid circular import
         if Model.updateTaskNextTaskId(self.__taskId, nextTaskId, runTaskId, runPluginId):
             self.__nextTaskId = nextTaskId
+            self.__nextTask = None
+
+            if nextTaskId != -1:
+                self.__nextTask = Model.retrieveTaskById(nextTaskId)
+
             return True
     
     def setScheduledRunTime(self, scheduledRunTime, runTaskId, runPluginId):
@@ -224,6 +246,38 @@ class Task:
 
         return False
     
+    def setPreviousTask(self, previousTask, runTaskId, runPluginId):
+         # update the previousTaskId in the model
+        from model import Model # import statement here to avoid circular import
+        previousTaskId = -1
+
+        if previousTask is not None:
+            previousTaskId = previousTask.getTaskId()
+        
+        if Model.updateTaskPreviousTaskId(self.__taskId, previousTaskId, runTaskId, runPluginId):
+            self.__previousTaskId = previousTaskId
+            self.__previousTask = previousTask
+
+            return True
+        
+        return False
+
+    def setNextTask(self, nextTask, runTaskId, runPluginId):
+        # update the nextTaskId in the model
+        from model import Model # import statement here to avoid circular import
+        nextTaskId = -1
+
+        if nextTask is not None:
+            nextTaskId = nextTask.getTaskId()
+        
+        if Model.updateTaskNextTaskId(self.__taskId, nextTaskId, runTaskId, runPluginId):
+            self.__nextTaskId = nextTaskId
+            self.__nextTask = nextTask
+
+            return True
+        
+        return False
+    
     '''
     ----------------------------------------------------------------------------
     Task methods
@@ -237,13 +291,17 @@ class Task:
     '''
     def start(self, taskManager):
         self.__taskManager = taskManager
-        self.__plugin.start(self.__taskId)
+
+        # set active to false before we start running in case something goes wrong, we don't continually boot with the running task active
+        self.setActive(False, self.getTaskId(), self.getPluginId())
+
+        self.__plugin.start(self.__taskId, [])
         self.terminate()
     
     '''
     public terminate()
 
-    This method is used to clean up the task after execution.
+    This method is used to clean up the task after execution and tell the task manager to start the next task.
     '''
     def terminate(self):
         self.__plugin.terminate(self.__taskId)

@@ -10,10 +10,11 @@ from objects.log import Log
 class Startup(Plugin):
     def __init__(self, pluginId, identifier, pluginParameters):
         super().__init__(pluginId, identifier)
+        self.__taskManager = pluginParameters[0]
 
     @classmethod
-    def newPlugin(cls, runTaskId, runPluginId):
-        return super().newPlugin(cls, 'startup', [], runTaskId, runPluginId)
+    def newPlugin(cls, taskManager, runTaskId, runPluginId):
+        return super().newPlugin(cls, 'startup', [taskManager], runTaskId, runPluginId)
 
     '''
     ----------------------------------------------------------------------------
@@ -26,8 +27,18 @@ class Startup(Plugin):
 
     This method is used to start the plugin.
     '''
-    def start(self, taskId):
+    def start(self, taskId, taskParameters):
         Log.newLog("Startup plugin started", taskId, self.getPluginId(), 100)
+
+        from objects.task import Task
+        from plugins.test1 import Test1
+        test1Plugin = Test1.newPlugin(taskId, self.getPluginId())
+
+        from objects.task import Task
+        from model import Model
+        test1Task = Task.newTaskFromPlugin(100, test1Plugin, -1, -1, Model.createTimeStamp(), -1, -1, -1, True, taskId, self.getPluginId())
+
+        self.__taskManager.addTask(test1Task)
     
     def terminate(self, taskId):
         pass
