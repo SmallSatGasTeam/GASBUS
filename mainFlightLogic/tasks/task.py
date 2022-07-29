@@ -1,5 +1,3 @@
-# TODO: update with new variables
-
 '''
 This is the "task" object.
 
@@ -8,6 +6,16 @@ The task object requires a priority and a pluginId. The task object also receive
 taskId is an integer available for getting.
 priority is an integer available for getting and setting.
 pluginId is an integer available for getting.
+previousTaskId is an integer available for getting and setting.
+nextTaskId is an integer available for getting and setting.
+addToQueueTime is an integer available for getting.
+scheduledRunTime is an integer available for getting and setting.
+startTime is an integer available for getting and setting.
+endTime is an integer available for getting and setting.
+active is a boolean available for getting and setting.
+TODO: plugin is a plugin object available for getting.
+
+TODO: add task methods
 '''
 
 class Task:
@@ -34,6 +42,8 @@ class Task:
         self.__startTime = startTime
         self.__endTime = endTime
         self.__active = active
+
+        # TODO: set private plugin variable
 
         Task.tasks.append(self)
 
@@ -111,6 +121,8 @@ class Task:
     
     def getActive(self):
         return self.__active # boolean
+
+    # TODO: getPlugin():
 
     '''
     ----------------------------------------------------------------------------
@@ -194,6 +206,7 @@ class Task:
     This method is used to start the task.
     '''
     def startTask(self):
+        # TODO: call plugin startTask method
         raise Exception("No startTask function defined for child task")
     
     '''
@@ -202,6 +215,7 @@ class Task:
     This method is used to clean up the task after execution.
     '''
     def tearDown(self):
+        # TODO: call plugin tearDown method
         raise Exception("No tearDown function defined for child task")
 
     '''
@@ -210,6 +224,7 @@ class Task:
     This method is the asynchronous verion of the startTask method.
     '''
     async def startTask(self):
+        # TODO: call plugin startTask method
         raise Exception("No async startTask function defined for child task")
 
     '''
@@ -218,6 +233,7 @@ class Task:
     This method is the asynchronous verion of the tearDown method.
     '''
     async def tearDown(self):
+        # TODO: call plugin tearDown method
         raise Exception("No async tearDown function defined for child task")
     
     '''
@@ -226,6 +242,7 @@ class Task:
     This method returns whether or not the task is asynchronous.
     '''
     def isAsync(self):
+        # TODO: ask plugin if it is asynchronous
         raise Exception("No  isAsync function defined for child task")
 
     '''

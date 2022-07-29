@@ -16,6 +16,7 @@ echoMarker is a boolean available for getting and setting.
 class Log:
     # class variables
     logs = [] # a list of all instantiated logs
+    PRINT_LOG = True
 
     '''
     ----------------------------------------------------------------------------
@@ -51,6 +52,9 @@ class Log:
         # when logs are created, they are not sent or echoed
         sentMarker = False
         echoMarker = False
+
+        if cls.PRINT_LOG:
+            print(f'{level} | {Model.getDateTime(timeStamp)} | {message} | Task: {taskId} | Plugin: {pluginId}')
 
         return cls(logId, message, taskId, pluginId, level, timeStamp, sentMarker, echoMarker)
 
