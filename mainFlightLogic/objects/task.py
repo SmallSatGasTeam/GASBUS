@@ -83,6 +83,7 @@ class Task:
     @classmethod
     def newTaskFromPlugin(cls, priority, plugin, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, runTaskId, runPluginId):
         from model import Model # import statement here to avoid circular import
+
         taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, runTaskId, runPluginId)
 
         return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, plugin)
@@ -295,7 +296,7 @@ class Task:
         # set active to false before we start running in case something goes wrong, we don't continually boot with the running task active
         self.setActive(False, self.getTaskId(), self.getPluginId())
 
-        self.__plugin.start(self.__taskId, [])
+        self.__plugin.start(self.__taskId, self.__taskManager)
         self.terminate()
     
     '''
@@ -305,7 +306,7 @@ class Task:
     '''
     def terminate(self):
         self.__plugin.terminate(self.__taskId)
-        self.__taskManager.nextTask()
+        # self.__taskManager.nextTask() # unnecessary because of while true in next task
         pass
 
     '''

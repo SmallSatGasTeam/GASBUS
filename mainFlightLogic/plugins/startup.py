@@ -8,13 +8,12 @@ from plugins.plugin import Plugin
 from objects.log import Log
 
 class Startup(Plugin):
-    def __init__(self, pluginId, identifier, pluginParameters):
-        super().__init__(pluginId, identifier)
-        self.__taskManager = pluginParameters[0]
+    def __init__(self, pluginId, fileName, className):
+        super().__init__(pluginId, fileName, className, self)
 
     @classmethod
-    def newPlugin(cls, taskManager, runTaskId, runPluginId):
-        return super().newPlugin(cls, 'startup', [taskManager], runTaskId, runPluginId)
+    def newPlugin(cls, runTaskId, runPluginId):
+        return super().newPlugin(cls, 'startup', 'Startup', runTaskId, runPluginId)
 
     '''
     ----------------------------------------------------------------------------
@@ -27,7 +26,7 @@ class Startup(Plugin):
 
     This method is used to start the plugin.
     '''
-    def start(self, taskId, taskParameters):
+    def start(self, taskId, taskManager):
         Log.newLog("Startup plugin started", taskId, self.getPluginId(), 100)
 
         from objects.task import Task
@@ -38,7 +37,13 @@ class Startup(Plugin):
         from model import Model
         test1Task = Task.newTaskFromPlugin(100, test1Plugin, -1, -1, Model.createTimeStamp(), -1, -1, -1, True, taskId, self.getPluginId())
 
-        self.__taskManager.addTask(test1Task)
+        taskManager.addTask(test1Task)
+
+        from plugins.heartbeat import Heartbeat
+        heartbeatPlugin = Heartbeat.newPlugin(taskId, self.getPluginId())
+        heartbeatTask = Task.newTaskFromPlugin(10, heartbeatPlugin, -1, -1, Model.createTimeStamp(), Model.createTimeStamp() + 4, -1, -1, True, taskId, self.getPluginId())
+
+        taskManager.addTask(heartbeatTask)
     
     def terminate(self, taskId):
         pass

@@ -6,6 +6,7 @@ The model module contains the database connection and the database functions. An
 This module contains only static methods meaning that it cannot be instantiated.
 '''
 
+from pydoc import classname
 import sqlite3
 from sqlite3 import Error
 from datetime import datetime
@@ -915,7 +916,7 @@ class Model:
 
             # if the packets table doesn't exist, create it
             if cursor.fetchone() is None:
-                cursor.execute("CREATE TABLE plugins (pluginId INTEGER PRIMARY KEY, identifier TEXT);")
+                cursor.execute("CREATE TABLE plugins (pluginId INTEGER PRIMARY KEY, fileName TEXT, className TEXT);")
 
             connection.commit()
             return True
@@ -924,18 +925,18 @@ class Model:
             return False
 
     '''
-    public static createPlugin(identifier: string, runTaskId: integer, runPluginId: integer) -> integer
+    public static createPlugin(fileName: string, className: string, runTaskId: integer, runPluginId: integer) -> integer
 
     Creates a new plugin entry in the database then returns the plugin id.
     '''
     @staticmethod
-    def createPlugin(identifier, runTaskId, runPluginId):
+    def createPlugin(fileName, className, runTaskId, runPluginId):
         connection = Model.__check_connection(runTaskId, runPluginId)
         if connection and Model.__checkPluginsTable(connection):
             # database query
             cursor = connection.cursor()
-            cursor.execute("""INSERT INTO plugins (identifier)
-                                VALUES (?)""", (identifier,))
+            cursor.execute("""INSERT INTO plugins (fileName, className)
+                                VALUES (?, ?)""", (fileName, className))
             connection.commit()
 
             pluginId = cursor.lastrowid
@@ -956,7 +957,7 @@ class Model:
         if connection and Model.__checkPluginsTable(connection):
             # database query
             cursor = connection.cursor()
-            cursor.execute("""SELECT *
+            cursor.execute("""SELECT pluginId, fileName, className
                                 FROM plugins
                                 WHERE pluginId = ?""", (pluginId,))
             result = cursor.fetchone()
@@ -965,28 +966,67 @@ class Model:
 
             # format result as a plugin object
             if result:
-                return Plugin(result[0], result[1])
+                fileName = result[1]
+                className = result[2]
+
+                # import the correct plugin child
+                module = __import__(f'plugins.{fileName}', fromlist=[className])
+                importClass = getattr(module, className)
+
+                return importClass(result[0], result[1], result[2])
 
         return False
 
     '''
-    public static retrievePluginByIdentifier(identifier: string, runTaskId: integer, runPluginId: integer) -> Plugin
+    public static retrievePluginByFileName(fileName: string, runTaskId: integer, runPluginId: integer) -> Plugin
     '''
     @staticmethod
-    def retrievePluginByIdentifier(identifier, runTaskId, runPluginId):
+    def retrievePluginByFileName(fileName, runTaskId, runPluginId):
         connection = Model.__check_connection(runTaskId, runPluginId)
         if connection and Model.__checkPluginsTable(connection):
             # database query
             cursor = connection.cursor()
-            cursor.execute("""SELECT (pluginId)
+            cursor.execute("""SELECT pluginId, fileName, className
                                 FROM plugins
-                                WHERE identifier = ?""", (identifier,))
+                                WHERE fileName = ?""", (fileName,))
             result = cursor.fetchone()
 
             Model.__close_connection(connection)
 
-            # return the pluginId
+            # format result as a plugin object
             if result:
-                return result[0]
+                fileName = result[1]
+                className = result[2]
+                module = __import__(f'plugins.{fileName}', fromlist=[className])
+                importClass = getattr(module, className)
+
+                return importClass(result[0], result[1], result[2])
+
+        return False
+
+    '''
+    public static retrievePluginByClassName(className: string, runTaskId: integer, runPluginId: integer) -> Plugin
+    '''
+    @staticmethod
+    def retrievePluginByClassName(className, runTaskId, runPluginId):
+        connection = Model.__check_connection(runTaskId, runPluginId)
+        if connection and Model.__checkPluginsTable(connection):
+            # database query
+            cursor = connection.cursor()
+            cursor.execute("""SELECT pluginId, fileName, className
+                                FROM plugins
+                                WHERE className = ?""", (className,))
+            result = cursor.fetchone()
+
+            Model.__close_connection(connection)
+
+            # format result as a plugin object
+            if result:
+                fileName = result[1]
+                className = result[2]
+                module = __import__(f'plugins.{fileName}', fromlist=[className])
+                importClass = getattr(module, className)
+
+                return importClass(result[0], result[1], result[2])
 
         return False

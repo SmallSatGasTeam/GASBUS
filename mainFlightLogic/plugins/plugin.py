@@ -5,6 +5,7 @@ The plugin object requires an identifier. The plugin object also includes a plug
 
 pluginId is an integer available for getting.
 identifier is a string available for getting.
+TODO: add fileName and className
 '''
 
 from objects.log import Log
@@ -22,32 +23,35 @@ class Plugin:
 
     default constructor - never use this outside of the class, use the class methods instead
     '''
-    def __init__(self, pluginId, identifier):
+    def __init__(self, pluginId, fileName, className, child):
         self.__pluginId = pluginId
-        self.__identifier = identifier
+        self.__fileName = fileName
+        self.__className = className
 
-        Plugin.plugins.append(self)
+        Plugin.plugins.append(child)
 
     '''
     public Plugin.newPlugin(identifier: string) -> Plugin
 
     This is used to create the class method for creating a new plugin.
     '''
-    def newPlugin(cls, identifier, pluginParameters, runTaskId, runPluginId):
+    def newPlugin(cls, fileName, className, runTaskId, runPluginId):
         from model import Model # import statement here to avoid circular import
-        pluginId = Model.retrievePluginByIdentifier(identifier, runTaskId, runPluginId)
+        plugin = Model.retrievePluginByClassName(className, runTaskId, runPluginId)
 
-        if not pluginId:
-            pluginId = Model.createPlugin(identifier, runTaskId, runPluginId)
+        if plugin:
+            return plugin
+        
+        pluginId = Model.createPlugin(fileName, className, runTaskId, runPluginId)
 
-        Log.newLog(f'{identifier} plugin instantiated as plugin {pluginId}', runTaskId, runPluginId, 100)
+        Log.newLog(f'{className} plugin instantiated as plugin {pluginId}', runTaskId, runPluginId, 100)
 
         # check if a plugin with the given pluginId already exists to avoid duplicates and synchronization issues
         plugin = Plugin.checkPluginsForId(pluginId)
         if plugin is not None:
             return plugin
 
-        return cls(pluginId, identifier, pluginParameters)
+        return cls(pluginId, fileName, className)
 
     '''
     public Plugin.pluginWithId(pluginId: integer, identifier: string) -> Plugin
@@ -85,8 +89,11 @@ class Plugin:
     def getPluginId(self):
         return self.__pluginId # integer
 
-    def getIdentifier(self):
-        return self.__identifier # string
+    def getFileName(self):
+        return self.__fileName # string
+
+    def getClassName(self):
+        return self.__className # string
 
     '''
     ----------------------------------------------------------------------------
@@ -119,8 +126,10 @@ class Plugin:
     '''
     # string function
     def __str__(self):
-        return f'Plugin {self.__pluginId} identified as {self.__identifier}'
+        # TODO: add fileName and className
+        return f'Plugin {self.__pluginId}'
 
     # represent function
     def __repr__(self):
-        return f'Plugin(pluginId={self.__pluginId}, identifier={self.__identifier})'
+        # TODO: add fileName and className
+        return f'Plugin(pluginId={self.__pluginId})'

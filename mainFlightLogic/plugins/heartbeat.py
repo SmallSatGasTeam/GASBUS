@@ -1,20 +1,19 @@
 '''
-This is the "test1" plugin.
+This is the "heartbeat" plugin.
 
-The test1 plugin is only for testing and logs that it has run.
+The heartbeat plugin runs every 4 seconds and toggles the hearbeat pin from high to low.
 '''
 
 from plugins.plugin import Plugin
 from objects.log import Log
 
-class Test1(Plugin):
+class Heartbeat(Plugin):
     def __init__(self, pluginId, fileName, className):
         super().__init__(pluginId, fileName, className, self)
 
     @classmethod
     def newPlugin(cls, runTaskId, runPluginId):
-        plugin = super().newPlugin(cls, 'test1', 'Test1', runTaskId, runPluginId)
-        return plugin
+        return super().newPlugin(cls, 'heartbeat', 'Heartbeat', runTaskId, runPluginId)
 
     '''
     ----------------------------------------------------------------------------
@@ -28,7 +27,13 @@ class Test1(Plugin):
     This method is used to start the plugin.
     '''
     def start(self, taskId, taskManager):
-        Log.newLog("Test 1 plugin started", taskId, self.getPluginId(), 100)
+        Log.newLog("Toggle heartbeat", taskId, self.getPluginId(), 100)
+
+        from objects.task import Task
+        from model import Model
+        newHeartbeatTask = Task.newTaskFromPlugin(10, self, -1, -1, Model.createTimeStamp(), Model.createTimeStamp() + 4, -1, -1, True, taskId, self.getPluginId())
+
+        taskManager.addTask(newHeartbeatTask)
     
     def terminate(self, taskId):
         pass

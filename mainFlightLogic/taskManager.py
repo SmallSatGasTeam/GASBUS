@@ -18,13 +18,13 @@ class TaskManager:
     default constructor
     '''
     def __init__(self):
-        # TODO: create task for startup plugin
         from plugins.startup import Startup
         from objects.task import Task
 
-        startupPlugin = Startup.newPlugin(self, 0, 0)
+        startupPlugin = Startup.newPlugin(0, 0)
         startupTask = Task.newTaskFromPlugin(0, startupPlugin, -1, -1, Model.createTimeStamp(), -1, -1, -1, True, 0, 0)
         self.__firstPriorityTask = startupTask
+        self.__firstScheduledTask = None
 
         Log.newLog("Startup task added to priority queue", 0, 0, 100)
 
@@ -48,16 +48,16 @@ class TaskManager:
     '''
 
     def nextTask(self):
-        # TODO: check current time against the first scheduled task time
-            # TODO: if necessary add scheduled tasks to the priority queue
-        
-        task = self.__firstPriorityTask
-        if task is not None:
-            self.__firstPriorityTask = task.getNextTask()
-            task.start(self)
-        else:
-            Log.newLog("No tasks to run", 0, 0, 100)
-            # TODO: wait or look for scheduled tasks
+        while True:
+            if self.__firstScheduledTask is not None and self.__firstScheduledTask.getScheduledRunTime() <= Model.createTimeStamp():
+                scheduledTask = self.__firstScheduledTask
+                self.__firstScheduledTask = scheduledTask.getNextTask()
+                self.__addTaskToPriorityQueue(scheduledTask)
+            
+            task = self.__firstPriorityTask
+            if task is not None:
+                self.__firstPriorityTask = task.getNextTask()
+                task.start(self)
 
     '''
     public addTask(task: Task)
@@ -69,20 +69,30 @@ class TaskManager:
             self.__addTaskToPriorityQueue(task)
 
         else:
-            # TODO: schedule task
+            self.__addTaskToScheduledQueue(task)
             pass
     
     def __addTaskToPriorityQueue(self, task):
         if self.__firstPriorityTask is None:
             self.__firstPriorityTask = task
-        # check if the new task is hig
+        # check if the new task is higher priority
         elif task.getPriority() < self.__firstPriorityTask.getPriority():
             task.setNextTask(self.__firstPriorityTask)
             self.__firstPriorityTask = task
         else:
-            task.setNextTask(self.__firstPriorityTask)
-            self.__firstPriorityTask = task
+            # TODO position the task in the priority queue
+            pass
     
+    def __addTaskToScheduledQueue(self, task):
+        if self.__firstScheduledTask is None:
+            self.__firstScheduledTask = task
+        elif task.getScheduledRunTime() < self.__firstScheduledTask.getScheduledRunTime():
+            task.setNextTask(self.__firstScheduledTask)
+            self.__firstScheduledTask = task
+        else:
+            # TODO: position the task in the scheduled queue
+            pass
+
 if __name__ == "__main__":
     # During testing, calling this task from the command line will create the task manager.
     taskManager = TaskManager()
