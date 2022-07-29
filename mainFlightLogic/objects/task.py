@@ -42,7 +42,11 @@ class Task:
         self.__startTime = startTime
         self.__endTime = endTime
         self.__active = active
+        
+        # object properties
         self.__plugin = plugin
+        self.__previousTask = None
+        self.__nextTask = None
 
         Task.tasks.append(self)
 
@@ -85,7 +89,10 @@ class Task:
         if task is not None:
             return task
 
-        return cls.newTask(priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, runTaskId, runPluginId)
+        # TODO: get plugin from pluginId
+        plugin = None
+
+        return cls(taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, startTime, endTime, active, plugin)
 
     '''
     private static Task.__checkTasksForId(taskId: integer) -> Task | None
@@ -98,6 +105,8 @@ class Task:
             if task.getTaskId() == taskId:
                 return task
         return None
+
+    # TODO: add static get task from id
 
     '''
     ----------------------------------------------------------------------------
@@ -136,7 +145,14 @@ class Task:
     def getActive(self):
         return self.__active # boolean
 
-    # TODO: getPlugin():
+    def getPlugin(self):
+        return self.__plugin # plugin
+
+    def getPreviousTask(self):
+        return self.__previousTask # task
+    
+    def getNextTask(self):
+        return self.__nextTask # task
 
     '''
     ----------------------------------------------------------------------------
@@ -215,49 +231,24 @@ class Task:
     These methods are used to perform actions on the task object.
     ----------------------------------------------------------------------------
 
-    public startTask()
+    public start(taskManager: taskManager)
 
     This method is used to start the task.
     '''
-    def startTask(self):
-        # TODO: call plugin startTask method
-        raise Exception("No startTask function defined for child task")
+    def start(self, taskManager):
+        self.__taskManager = taskManager
+        self.__plugin.start(self.__taskId)
+        self.terminate()
     
     '''
-    public tearDown()
+    public terminate()
 
     This method is used to clean up the task after execution.
     '''
-    def tearDown(self):
-        # TODO: call plugin tearDown method
-        raise Exception("No tearDown function defined for child task")
-
-    '''
-    public async startTask()
-
-    This method is the asynchronous verion of the startTask method.
-    '''
-    async def startTask(self):
-        # TODO: call plugin startTask method
-        raise Exception("No async startTask function defined for child task")
-
-    '''
-    public async tearDown()
-
-    This method is the asynchronous verion of the tearDown method.
-    '''
-    async def tearDown(self):
-        # TODO: call plugin tearDown method
-        raise Exception("No async tearDown function defined for child task")
-    
-    '''
-    public isAsync() -> boolean
-
-    This method returns whether or not the task is asynchronous.
-    '''
-    def isAsync(self):
-        # TODO: ask plugin if it is asynchronous
-        raise Exception("No  isAsync function defined for child task")
+    def terminate(self):
+        self.__plugin.terminate(self.__taskId)
+        self.__taskManager.nextTask()
+        pass
 
     '''
     ----------------------------------------------------------------------------

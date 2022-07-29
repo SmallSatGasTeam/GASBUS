@@ -1,7 +1,7 @@
 '''
 This is the abstract "plugin" object.
 
-The plugin object requires an identifier. The plugin object also includes a pluginId that is assigned by the database. The identifier is a human understandable identifier for reporting purposes and to help make code using the plugin more readable.
+The plugin object requires an identifier. The plugin object also includes a pluginId that is assigned by the database. The identifier is the name of the file where the plugin can be found.
 
 pluginId is an integer available for getting.
 identifier is a string available for getting.
@@ -87,7 +87,29 @@ class Plugin:
 
     def getIdentifier(self):
         return self.__identifier # string
+
+    '''
+    ----------------------------------------------------------------------------
+    Plugin methods
+
+    These methods are used to perform the plugin's functionality.
+    ----------------------------------------------------------------------------
+
+    public start()
+
+    This method is used to start the plugin.
+    '''
+    def start(self):
+        raise Exception("No startTask function defined for child task")
     
+    '''
+    public terminate()
+
+    This method is used to clean up the plugin after execution.
+    '''
+    def terminate(self):
+        raise Exception("No terminate function defined for child task")
+
     '''
     ----------------------------------------------------------------------------
     Visual methods

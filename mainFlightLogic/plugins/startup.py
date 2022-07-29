@@ -14,3 +14,20 @@ class Startup(Plugin):
     @classmethod
     def newPlugin(cls, runTaskId, runPluginId):
         return super().newPlugin(cls, 'startup', [], runTaskId, runPluginId)
+
+    '''
+    ----------------------------------------------------------------------------
+    Plugin methods
+
+    These methods are used to perform the plugin's functionality.
+    ----------------------------------------------------------------------------
+
+    public start()
+
+    This method is used to start the plugin.
+    '''
+    def start(self, taskId):
+        Log.newLog("Startup plugin started", taskId, self.getPluginId(), 100)
+    
+    def terminate(self, taskId):
+        pass

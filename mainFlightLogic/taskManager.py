@@ -31,9 +31,15 @@ class TaskManager:
         # TODO: get tasks from database
         activeTasks = Model.retrieveTasksByActive(True, 0, 0)
 
+        for task in activeTasks:
+            # TODO: add task
+            pass
+
         # TODO: put all active unscheduled tasks into priority queue
 
         # TODO: put all sheduled tasks in queue
+
+        self.nextTask()
 
         pass
 
@@ -47,8 +53,13 @@ class TaskManager:
         # TODO: check current time against the first scheduled task time
             # TODO: if necessary add scheduled tasks to the priority queue
         
-        # TODO: run the next task from the priority queue
-        pass
+        task = self.__firstPriorityTask
+        if task is not None:
+            self.__firstPriorityTask = task.getNextTask()
+            task.start(self)
+        else:
+            Log.newLog("No tasks to run", 0, 0, 100)
+            # TODO: wait or look for scheduled tasks
 
     '''
     public addTask(task: Task)
