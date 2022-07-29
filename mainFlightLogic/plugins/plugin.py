@@ -7,6 +7,8 @@ pluginId is an integer available for getting.
 identifier is a string available for getting.
 '''
 
+from objects.log import Log
+
 class Plugin:
     # class variables
     plugins = [] # a list of all instantiated plugins
@@ -31,11 +33,21 @@ class Plugin:
 
     This is used to create the class method for creating a new plugin.
     '''
-    def newPlugin(identifier, runTaskId, runPluginId):
+    def newPlugin(cls, identifier, pluginParameters, runTaskId, runPluginId):
         from model import Model # import statement here to avoid circular import
-        pluginId = Model.createPlugin(identifier, runTaskId, runPluginId)
+        pluginId = Model.retrievePluginByIdentifier(identifier, runTaskId, runPluginId)
 
-        return pluginId
+        if not pluginId:
+            pluginId = Model.createPlugin(identifier, runTaskId, runPluginId)
+
+        Log.newLog(f'{identifier} plugin instantiated as plugin {pluginId}', runTaskId, runPluginId, 100)
+
+        # check if a plugin with the given pluginId already exists to avoid duplicates and synchronization issues
+        plugin = Plugin.checkPluginsForId(pluginId)
+        if plugin is not None:
+            return plugin
+
+        return cls(pluginId, identifier, pluginParameters)
 
     '''
     public Plugin.pluginWithId(pluginId: integer, identifier: string) -> Plugin
@@ -45,19 +57,19 @@ class Plugin:
     @classmethod
     def pluginWithId(cls, pluginId, identifier):
         # check if a plugin with the given pluginId already exists to avoid duplicates and synchronization issues
-        plugin = cls.__checkPluginsForId(pluginId)
+        plugin = cls.checkPluginsForId(pluginId)
         if plugin is not None:
             return plugin
 
         return cls(pluginId, identifier)
 
     '''
-    private static Plugin.__checkPluginsForId(pluginId: integer) -> Plugin | None
+    private static Plugin.checkPluginsForId(pluginId: integer) -> Plugin | None
 
     Checks to see if a plugin with a given pluginId has already been created. If it has, it will be returned.
     '''
     @staticmethod
-    def __checkPluginsForId(pluginId):
+    def checkPluginsForId(pluginId):
         for plugin in Plugin.plugins:
             if plugin.getPluginId() == pluginId:
                 return plugin

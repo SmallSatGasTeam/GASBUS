@@ -54,7 +54,7 @@ class Log:
         echoMarker = False
 
         if cls.PRINT_LOG:
-            print(f'{level} | {Model.getDateTime(timeStamp)} | Task: {taskId:02} | Plugin: {pluginId:02} | {message}')
+            print(f'{level:03} | {Model.getDateTime(timeStamp)} | Task: {taskId:03} | Plugin: {pluginId:03} | {message}')
 
         return cls(logId, message, taskId, pluginId, level, timeStamp, sentMarker, echoMarker)
 

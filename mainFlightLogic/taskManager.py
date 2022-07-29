@@ -49,6 +49,17 @@ class TaskManager:
         
         # TODO: run the next task from the priority queue
         pass
+
+    '''
+    public addTask(task: Task)
+
+    This method is used to add a task to either the priority or scheduled queue.
+    '''
+    def addTask(self, task):
+        # TODO: check if task needs to be scheduled
+            # TODO: if necessary add task to the scheduled queue
+            # TODO: otherwise add task to the priority queue
+        pass
     
 if __name__ == "__main__":
     # During testing, calling this task from the command line will create the task manager.

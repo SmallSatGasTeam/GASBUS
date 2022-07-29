@@ -978,15 +978,15 @@ class Model:
         if connection and Model.__checkPluginsTable(connection):
             # database query
             cursor = connection.cursor()
-            cursor.execute("""SELECT *
+            cursor.execute("""SELECT (pluginId)
                                 FROM plugins
                                 WHERE identifier = ?""", (identifier,))
             result = cursor.fetchone()
 
             Model.__close_connection(connection)
 
-            # format result as a plugin object
+            # return the pluginId
             if result:
-                return Plugin(result[0], result[1])
+                return result[0]
 
         return False
