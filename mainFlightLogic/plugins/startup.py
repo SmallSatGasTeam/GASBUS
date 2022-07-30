@@ -27,9 +27,7 @@ class Startup(Plugin):
 
         # Adding tasks for testing purposes
 
-        from objects.task import Task
-        from plugins.test1 import Test1
-        test1Plugin = Test1.newPlugin(taskId, self.getPluginId())
+        test1Plugin = Plugin.pluginFromClassName("Test1", taskId, self.getPluginId())
 
         from objects.task import Task
         from model import Model
@@ -37,14 +35,12 @@ class Startup(Plugin):
 
         taskManager.addTask(test1Task)
 
-        from plugins.heartbeat import Heartbeat
-        heartbeatPlugin = Heartbeat.newPlugin(taskId, self.getPluginId())
+        heartbeatPlugin = Plugin.pluginFromClassName("Heartbeat", taskId, self.getPluginId())
         heartbeatTask = Task.priorityTask(10, heartbeatPlugin, [], taskId, self.getPluginId())
 
         taskManager.addTask(heartbeatTask)
 
-        from plugins.test2 import Test2
-        test2Plugin = Test2.newPlugin(taskId, self.getPluginId())
+        test2Plugin = Plugin.pluginFromClassName("Test2", taskId, self.getPluginId())
         test2Task = Task.priorityTask(200, test2Plugin, [], taskId, self.getPluginId())
 
         taskManager.addTask(test2Task)

@@ -6,12 +6,12 @@ The task object requires a priority and a pluginId. The task object also receive
 taskId is an integer available for getting.
 priority is an integer available for getting and setting.
 pluginId is an integer available for getting. TODO: move away from using ids on the object
-TODO: taskParameters are parameters passed to the plugin on start.
+taskParameters is an array available for getting.
 previousTaskId is an integer available for getting and setting. TODO: move away from using ids on the object
 nextTaskId is an integer available for getting and setting. TODO: move away from using ids on the object
 addToQueueTime is an integer available for getting.
 scheduledRunTime is an integer available for getting and setting.
-TODO: add timeSensitivity that removes the task if it wasn't run within the given number of seconds after the scheduledRunTime
+timeSensitivity is an integer available for getting.
 startTime is an integer available for getting and setting.
 endTime is an integer available for getting and setting.
 active is a boolean available for getting and setting.

@@ -56,6 +56,31 @@ class Plugin:
         return cls(pluginId, fileName, className)
 
     '''
+    public Plugin.pluginFromClassName(className: string) -> Plugin
+
+    This is the class method for instantiating a plugin from a class name.
+    '''
+    @classmethod
+    def pluginFromClassName(cls, className, runTaskId, runPluginId):
+        plugin = cls.checkPluginsForClassName(className)
+        if plugin is not None:
+            return plugin
+
+        from model import Model
+        plugin = Model.retrievePluginByClassName(className, runTaskId, runPluginId)
+        if plugin:
+            return plugin
+        
+        from plugins.discoverPlugins import DiscoverPlugins
+        DiscoverPlugins.discoverPlugins(runTaskId, runPluginId)
+
+        plugin = cls.checkPluginsForClassName(className)
+        if plugin is not None:
+            return plugin
+        
+        return None
+
+    '''
     public Plugin.pluginWithId(pluginId: integer, identifier: string) -> Plugin
 
     This is the class method for creating a new plugin object for a plugin that has already been created in the database. If a plugin with the given pluginId already exists, it will be returned instead of creating a new plugin object to avoid synchronization issues. Otherwise, a new plugin object will be created.
@@ -70,7 +95,7 @@ class Plugin:
         return cls(pluginId, identifier)
 
     '''
-    private static Plugin.checkPluginsForId(pluginId: integer) -> Plugin | None
+    public static Plugin.checkPluginsForId(pluginId: integer) -> Plugin | None
 
     Checks to see if a plugin with a given pluginId has already been created. If it has, it will be returned.
     '''
@@ -78,6 +103,18 @@ class Plugin:
     def checkPluginsForId(pluginId):
         for plugin in Plugin.plugins:
             if plugin.getPluginId() == pluginId:
+                return plugin
+        return None
+    
+    '''
+    public static Plugin.checkPluginsForClassName(className: string) -> Plugin | None
+
+    Checks to see if a plugin with a given classname has already been created. If it has, it will be returned.
+    '''
+    @staticmethod
+    def checkPluginsForClassName(className):
+        for plugin in Plugin.plugins:
+            if plugin.getClassName() == className:
                 return plugin
         return None
 

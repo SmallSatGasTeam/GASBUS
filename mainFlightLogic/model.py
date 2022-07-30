@@ -1041,3 +1041,38 @@ class Model:
                 return importClass(result[0], result[1], result[2])
 
         return False
+
+    '''
+    public static retrieveOrCreatePlugin(fileName: string, className: string, runTaskId: integer, runPluginId: integer) -> Plugin
+    '''
+    @staticmethod
+    def retrieveOrCreatePlugin(fileName, className, runTaskId, runPluginId):
+        connection = Model.__check_connection(runTaskId, runPluginId)
+        if connection and Model.__checkPluginsTable(connection):
+            # database query
+            cursor = connection.cursor()
+            cursor.execute("""SELECT pluginId, fileName, className
+                                FROM plugins
+                                WHERE fileName = ? AND className = ?""", (fileName, className))
+            result = cursor.fetchone()
+
+            Model.__close_connection(connection)
+
+            # format result as a plugin object
+            if result:
+                fileName = result[1]
+                className = result[2]
+                module = __import__(f'plugins.{fileName}', fromlist=[className])
+                importClass = getattr(module, className)
+
+                return importClass(result[0], result[1], result[2])
+
+            # if the plugin doesn't exist, create it
+            else:
+                pluginId = Model.createPlugin(fileName, className, runTaskId, runPluginId)
+                module = __import__(f'plugins.{fileName}', fromlist=[className])
+                importClass = getattr(module, className)
+
+                return importClass(pluginId, fileName, className)
+
+        return False
