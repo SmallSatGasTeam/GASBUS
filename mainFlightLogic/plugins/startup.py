@@ -33,19 +33,19 @@ class Startup(Plugin):
 
         from objects.task import Task
         from model import Model
-        test1Task = Task.newTaskFromPlugin(100, test1Plugin, -1, -1, Model.createTimeStamp(), -1, -1, -1, True, taskId, self.getPluginId())
+        test1Task = Task.priorityTask(100, test1Plugin, [], taskId, self.getPluginId())
 
         taskManager.addTask(test1Task)
 
         from plugins.heartbeat import Heartbeat
         heartbeatPlugin = Heartbeat.newPlugin(taskId, self.getPluginId())
-        heartbeatTask = Task.newTaskFromPlugin(10, heartbeatPlugin, -1, -1, Model.createTimeStamp(), Model.createTimeStamp(), -1, -1, True, taskId, self.getPluginId())
+        heartbeatTask = Task.priorityTask(10, heartbeatPlugin, [], taskId, self.getPluginId())
 
         taskManager.addTask(heartbeatTask)
 
         from plugins.test2 import Test2
         test2Plugin = Test2.newPlugin(taskId, self.getPluginId())
-        test2Task = Task.newTaskFromPlugin(200, test2Plugin, -1, -1, Model.createTimeStamp(), -1, -1, -1, True, taskId, self.getPluginId())
+        test2Task = Task.priorityTask(200, test2Plugin, [], taskId, self.getPluginId())
 
         taskManager.addTask(test2Task)
     

@@ -27,9 +27,10 @@ class Heartbeat(Plugin):
 
         from objects.task import Task
         from model import Model
-        newHeartbeatTask = Task.newTaskFromPlugin(10, self, -1, -1, Model.createTimeStamp(), Model.createTimeStamp() + 4, -1, -1, True, taskId, self.getPluginId())
+        
+        heartbeatTask = Task.scheduleTaskDelta(10, self, 4, 4, [], taskId, self.getPluginId())
 
-        taskManager.addTask(newHeartbeatTask)
+        taskManager.addTask(heartbeatTask)
     
     def terminate(self, taskId):
         pass

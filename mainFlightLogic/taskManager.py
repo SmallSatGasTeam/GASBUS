@@ -22,7 +22,7 @@ class TaskManager:
         from objects.task import Task
         
         startupPlugin = Startup.newPlugin(0, 0)
-        startupTask = Task.newTaskFromPlugin(0, startupPlugin, -1, -1, Model.createTimeStamp(), -1, -1, -1, True, 0, 0)
+        startupTask = Task.priorityTask(0, startupPlugin, [], 0, 0)
         self.__firstPriorityTask = startupTask
         self.__firstScheduledTask = None
 

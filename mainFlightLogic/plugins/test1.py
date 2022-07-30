@@ -32,13 +32,13 @@ class Test1(Plugin):
         from objects.task import Task
         from model import Model
 
-        test2Task = Task.newTaskFromPlugin(200, test2Plugin, -1, -1, Model.createTimeStamp(), -1, -1, -1, True, taskId, self.getPluginId())
+        test2Task = Task.priorityTask(200, test2Plugin, [], taskId, self.getPluginId())
         taskManager.addTask(test2Task)
 
-        test2Task2 = Task.newTaskFromPlugin(200, test2Plugin, -1, -1, Model.createTimeStamp(), Model.createTimeStamp() + 6, -1, -1, True, taskId, self.getPluginId())
+        test2Task2 = Task.scheduleTaskDelta(200, test2Plugin, 6, 10, [], taskId, self.getPluginId())
         taskManager.addTask(test2Task2)
 
-        test2Task3 = Task.newTaskFromPlugin(200, test2Plugin, -1, -1, Model.createTimeStamp(), Model.createTimeStamp() + 5, -1, -1, True, taskId, self.getPluginId())
+        test2Task3 = Task.scheduleTaskDelta(200, test2Plugin, 5, 10, [], taskId, self.getPluginId())
         taskManager.addTask(test2Task3)
     
     def terminate(self, taskId):
