@@ -20,13 +20,11 @@ class TaskManager:
     def __init__(self):
         from plugins.startup import Startup
         from objects.task import Task
-
+        
         startupPlugin = Startup.newPlugin(0, 0)
         startupTask = Task.newTaskFromPlugin(0, startupPlugin, -1, -1, Model.createTimeStamp(), -1, -1, -1, True, 0, 0)
         self.__firstPriorityTask = startupTask
         self.__firstScheduledTask = None
-
-        Log.newLog("Startup task added to priority queue", 0, 0, 100)
 
         # TODO: get tasks from database
         activeTasks = Model.retrieveTasksByActive(True, 0, 0)
@@ -35,8 +33,6 @@ class TaskManager:
             # TODO: put all active unscheduled tasks into priority queue
 
             # TODO: put all sheduled tasks in queue
-
-            print(task)
             pass
 
         self.__runTasks()

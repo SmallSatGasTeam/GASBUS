@@ -23,19 +23,23 @@ class Plugin:
 
     default constructor - never use this outside of the class, use the class methods instead
     '''
-    def __init__(self, pluginId, fileName, className, child):
+    def __init__(self, pluginId, fileName, className):
         self.__pluginId = pluginId
         self.__fileName = fileName
         self.__className = className
 
-        Plugin.plugins.append(child)
+        Plugin.plugins.append(self)
 
     '''
     public Plugin.newPlugin(identifier: string) -> Plugin
 
     This is used to create the class method for creating a new plugin.
     '''
-    def newPlugin(cls, fileName, className, runTaskId, runPluginId):
+    @classmethod
+    def newPlugin(cls, runTaskId, runPluginId):
+        className = cls.__name__
+        fileName = className[0].lower() + className[1:]
+
         from model import Model # import statement here to avoid circular import
         plugin = Model.retrievePluginByClassName(className, runTaskId, runPluginId)
 
@@ -43,8 +47,6 @@ class Plugin:
             return plugin
         
         pluginId = Model.createPlugin(fileName, className, runTaskId, runPluginId)
-
-        Log.newLog(f'{className} plugin instantiated as plugin {pluginId}', runTaskId, runPluginId, 100)
 
         # check if a plugin with the given pluginId already exists to avoid duplicates and synchronization issues
         plugin = Plugin.checkPluginsForId(pluginId)

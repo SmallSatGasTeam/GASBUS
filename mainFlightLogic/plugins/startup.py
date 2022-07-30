@@ -9,11 +9,7 @@ from objects.log import Log
 
 class Startup(Plugin):
     def __init__(self, pluginId, fileName, className):
-        super().__init__(pluginId, fileName, className, self)
-
-    @classmethod
-    def newPlugin(cls, runTaskId, runPluginId):
-        return super().newPlugin(cls, 'startup', 'Startup', runTaskId, runPluginId)
+        super().__init__(pluginId, fileName, className)
 
     '''
     ----------------------------------------------------------------------------

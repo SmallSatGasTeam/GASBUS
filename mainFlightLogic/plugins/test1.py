@@ -9,12 +9,7 @@ from objects.log import Log
 
 class Test1(Plugin):
     def __init__(self, pluginId, fileName, className):
-        super().__init__(pluginId, fileName, className, self)
-
-    @classmethod
-    def newPlugin(cls, runTaskId, runPluginId):
-        plugin = super().newPlugin(cls, 'test1', 'Test1', runTaskId, runPluginId)
-        return plugin
+        super().__init__(pluginId, fileName, className)
 
     '''
     ----------------------------------------------------------------------------
