@@ -29,6 +29,8 @@ class Startup(Plugin):
     def start(self, taskId, taskManager):
         Log.newLog("Startup plugin started", taskId, self.getPluginId(), 100)
 
+        # Adding tasks for testing purposes
+
         from objects.task import Task
         from plugins.test1 import Test1
         test1Plugin = Test1.newPlugin(taskId, self.getPluginId())
@@ -41,9 +43,15 @@ class Startup(Plugin):
 
         from plugins.heartbeat import Heartbeat
         heartbeatPlugin = Heartbeat.newPlugin(taskId, self.getPluginId())
-        heartbeatTask = Task.newTaskFromPlugin(10, heartbeatPlugin, -1, -1, Model.createTimeStamp(), Model.createTimeStamp() + 4, -1, -1, True, taskId, self.getPluginId())
+        heartbeatTask = Task.newTaskFromPlugin(10, heartbeatPlugin, -1, -1, Model.createTimeStamp(), Model.createTimeStamp(), -1, -1, True, taskId, self.getPluginId())
 
         taskManager.addTask(heartbeatTask)
+
+        from plugins.test2 import Test2
+        test2Plugin = Test2.newPlugin(taskId, self.getPluginId())
+        test2Task = Task.newTaskFromPlugin(200, test2Plugin, -1, -1, Model.createTimeStamp(), -1, -1, -1, True, taskId, self.getPluginId())
+
+        taskManager.addTask(test2Task)
     
     def terminate(self, taskId):
         pass

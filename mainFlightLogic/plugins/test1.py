@@ -29,6 +29,22 @@ class Test1(Plugin):
     '''
     def start(self, taskId, taskManager):
         Log.newLog("Test 1 plugin started", taskId, self.getPluginId(), 100)
+
+        from objects.task import Task
+        from plugins.test2 import Test2
+        test2Plugin = Test2.newPlugin(taskId, self.getPluginId())
+
+        from objects.task import Task
+        from model import Model
+
+        test2Task = Task.newTaskFromPlugin(200, test2Plugin, -1, -1, Model.createTimeStamp(), -1, -1, -1, True, taskId, self.getPluginId())
+        taskManager.addTask(test2Task)
+
+        test2Task2 = Task.newTaskFromPlugin(200, test2Plugin, -1, -1, Model.createTimeStamp(), Model.createTimeStamp() + 6, -1, -1, True, taskId, self.getPluginId())
+        taskManager.addTask(test2Task2)
+
+        test2Task3 = Task.newTaskFromPlugin(200, test2Plugin, -1, -1, Model.createTimeStamp(), Model.createTimeStamp() + 5, -1, -1, True, taskId, self.getPluginId())
+        taskManager.addTask(test2Task3)
     
     def terminate(self, taskId):
         pass

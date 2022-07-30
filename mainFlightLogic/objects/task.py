@@ -6,10 +6,12 @@ The task object requires a priority and a pluginId. The task object also receive
 taskId is an integer available for getting.
 priority is an integer available for getting and setting.
 pluginId is an integer available for getting.
+TODO: taskParameters are parameters passed to the plugin on start.
 previousTaskId is an integer available for getting and setting.
 nextTaskId is an integer available for getting and setting.
 addToQueueTime is an integer available for getting.
 scheduledRunTime is an integer available for getting and setting.
+TODO: add timeSensitivity that removes the task if it wasn't run within the given number of seconds after the scheduledRunTime
 startTime is an integer available for getting and setting.
 endTime is an integer available for getting and setting.
 active is a boolean available for getting and setting.
@@ -52,13 +54,17 @@ class Task:
         self.__previousTask = None
         self.__nextTask = None
 
+        Task.tasks.append(self)
+
         if previousTaskId != -1:
-            self.__previousTask = Model.retrieveTaskById(previousTaskId)
+            self.__previousTask = Task.__checkTasksForId(previousTaskId)
+            if self.__previousTask == None:
+                self.__previousTask = Model.retrieveTaskById(previousTaskId, 0, 0)
         
         if nextTaskId != -1:
-            self.__nextTask = Model.retrieveTaskById(nextTaskId)
-
-        Task.tasks.append(self)
+            self.__nextTask = Task.__checkTasksForId(nextTaskId)
+            if self.__nextTask == None:
+                self.__nextTask = Model.retrieveTaskById(nextTaskId, 0, 0)
 
     '''
     public Task.newTask(priority: integer, pluginId: integer, previousTaskId: integer, nextTaskId: integer, addToQueueTime: integer, scheduledRunTime: integer, startTime: integer, endTime: integer, active: boolean, runTaskId: integer, runPluginId: integer) -> Task
@@ -306,7 +312,6 @@ class Task:
     '''
     def terminate(self):
         self.__plugin.terminate(self.__taskId)
-        # self.__taskManager.nextTask() # unnecessary because of while true in next task
         pass
 
     '''

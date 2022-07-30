@@ -35,29 +35,32 @@ class TaskManager:
             # TODO: put all active unscheduled tasks into priority queue
 
             # TODO: put all sheduled tasks in queue
+
+            print(task)
             pass
 
-        self.nextTask()
+        self.__runTasks()
 
         pass
 
     '''
-    I'm thinking that we pass the task manager into each class and then they perform a callback during the tear down. That would call:
+    private runTasks()
 
-    public nextTask()
+    This method is used to run the tasks in the queue.
     '''
 
-    def nextTask(self):
+    def __runTasks(self):
         while True:
             if self.__firstScheduledTask is not None and self.__firstScheduledTask.getScheduledRunTime() <= Model.createTimeStamp():
                 scheduledTask = self.__firstScheduledTask
                 self.__firstScheduledTask = scheduledTask.getNextTask()
+                scheduledTask.setNextTask(None, 0, 0)
                 self.__addTaskToPriorityQueue(scheduledTask)
-            
-            task = self.__firstPriorityTask
-            if task is not None:
-                self.__firstPriorityTask = task.getNextTask()
-                task.start(self)
+            else:
+                task = self.__firstPriorityTask
+                if task is not None:
+                    self.__firstPriorityTask = task.getNextTask()
+                    task.start(self)
 
     '''
     public addTask(task: Task)
@@ -65,24 +68,53 @@ class TaskManager:
     This method is used to add a task to either the priority or scheduled queue.
     '''
     def addTask(self, task):
-        if task.getScheduledRunTime() < Model.createTimeStamp():
+        if task.getScheduledRunTime() <= Model.createTimeStamp():
             self.__addTaskToPriorityQueue(task)
-
         else:
             self.__addTaskToScheduledQueue(task)
-            pass
     
+    '''
+    private __addTaskToPriorityQueue(task: Task)
+
+    This method is used to add a task to the priority queue.
+    ''' 
     def __addTaskToPriorityQueue(self, task):
         if self.__firstPriorityTask is None:
             self.__firstPriorityTask = task
         # check if the new task is higher priority
         elif task.getPriority() < self.__firstPriorityTask.getPriority():
-            task.setNextTask(self.__firstPriorityTask)
+            task.setNextTask(self.__firstPriorityTask, 0, 0)
             self.__firstPriorityTask = task
         else:
-            # TODO position the task in the priority queue
-            pass
-    
+            currentTask = self.__firstPriorityTask.getNextTask()
+            if currentTask is None:
+                self.__firstPriorityTask.setNextTask(task, 0, 0)
+                task.setPreviousTask(self.__firstPriorityTask, 0, 0)
+            else:
+                self.__recursivePriorityAdd(self.__firstPriorityTask, currentTask, task)
+
+    '''
+    private ___recursivePriorityAdd(previousTask: Task, task: Task)
+
+    This method is used to recursively search for the correct position to add a task to the priority queue.
+    '''
+    def __recursivePriorityAdd(self, previousTask, currentTask, task):
+        if task.getPriority() < currentTask.getPriority():
+            task.setNextTask(currentTask, 0, 0)
+            previousTask.setNextTask(task, 0, 0)
+            currentTask.setPreviousTask(task, 0, 0)
+            task.setPreviousTask(previousTask, 0, 0)
+        elif currentTask.getNextTask() is None:
+            currentTask.setNextTask(task, 0, 0)
+            task.setPreviousTask(currentTask, 0, 0)
+        else:
+            self.__recursivePriorityAdd(currentTask, currentTask.getNextTask(), task)
+
+    '''
+    private __addTaskToScheduledQueue(task: Task)
+
+    This method is used to add a task to the scheduled queue.
+    '''
     def __addTaskToScheduledQueue(self, task):
         if self.__firstScheduledTask is None:
             self.__firstScheduledTask = task
@@ -90,8 +122,29 @@ class TaskManager:
             task.setNextTask(self.__firstScheduledTask)
             self.__firstScheduledTask = task
         else:
-            # TODO: position the task in the scheduled queue
-            pass
+            currentTask = self.__firstScheduledTask.getNextTask()
+            if currentTask is None:
+                self.__firstScheduledTask.setNextTask(task, 0, 0)
+                task.setPreviousTask(self.__firstScheduledTask, 0, 0)
+            else:
+                self.__recursiveScheduledAdd(self.__firstScheduledTask, self.__firstScheduledTask.getNextTask(), task)
+    
+    '''
+    private __recursiveScheduledAdd(previousTask: Task, task: Task)
+
+    This method is used to recursively search for the correct position to add a task to the scheduled queue.
+    '''
+    def __recursiveScheduledAdd(self, previousTask, currentTask, task):
+        if task.getScheduledRunTime() < currentTask.getScheduledRunTime():
+            previousTask.setNextTask(task, 0, 0)
+            currentTask.setPreviousTask(task, 0, 0)
+            task.setNextTask(currentTask, 0, 0)
+            task.setPreviousTask(previousTask, 0, 0)
+        elif currentTask.getNextTask() is None:
+            currentTask.setNextTask(task, 0, 0)
+            task.setPreviousTask(currentTask, 0, 0)
+        else:
+            self.__recursiveScheduledAdd(currentTask, currentTask.getNextTask(), task)
 
 if __name__ == "__main__":
     # During testing, calling this task from the command line will create the task manager.
