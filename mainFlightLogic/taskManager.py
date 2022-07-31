@@ -18,26 +18,27 @@ class TaskManager:
     default constructor
     '''
     def __init__(self):
+        activeTasks = Model.retrieveTasksByActive(True, 0, 0)
+
+        self.__firstPriorityTask = None
+        self.__firstScheduledTask = None
+
+        for task in activeTasks:
+            if task.getShouldImportOnStart():
+                task.setNextTask(None, 0, 0)
+                task.setPreviousTask(None, 0, 0)
+                self.addTask(task)
+            else:
+                task.setActive(False, 0, 0)
+
         from plugins.startup import Startup
         from objects.task import Task
         
         startupPlugin = Startup.newPlugin(0, 0)
         startupTask = Task.priorityTask(0, startupPlugin, [], 0, 0)
         self.__firstPriorityTask = startupTask
-        self.__firstScheduledTask = None
-
-        # TODO: get tasks from database
-        activeTasks = Model.retrieveTasksByActive(True, 0, 0)
-
-        for task in activeTasks:
-            # TODO: put all active unscheduled tasks into priority queue
-
-            # TODO: put all sheduled tasks in queue
-            pass
 
         self.__runTasks()
-
-        pass
 
     '''
     private runTasks()
@@ -115,7 +116,7 @@ class TaskManager:
         if self.__firstScheduledTask is None:
             self.__firstScheduledTask = task
         elif task.getScheduledRunTime() < self.__firstScheduledTask.getScheduledRunTime():
-            task.setNextTask(self.__firstScheduledTask)
+            task.setNextTask(self.__firstScheduledTask, 0, 0)
             self.__firstScheduledTask = task
         else:
             currentTask = self.__firstScheduledTask.getNextTask()

@@ -28,7 +28,7 @@ class Heartbeat(Plugin):
         from objects.task import Task
         from model import Model
         
-        heartbeatTask = Task.scheduleTaskDelta(10, self, 4, 4, [], taskId, self.getPluginId())
+        heartbeatTask = Task.scheduleTaskDelta(10, self, 4, 4, [], taskId, self.getPluginId(), shouldImportOnStart=False)
 
         taskManager.addTask(heartbeatTask)
     

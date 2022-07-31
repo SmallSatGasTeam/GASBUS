@@ -6,7 +6,6 @@ The task object requires a priority and a pluginId. The task object also receive
 taskId is an integer available for getting.
 priority is an integer available for getting and setting.
 pluginId is an integer available for getting. TODO: move away from using ids on the object
-taskParameters is an array available for getting.
 previousTaskId is an integer available for getting and setting. TODO: move away from using ids on the object
 nextTaskId is an integer available for getting and setting. TODO: move away from using ids on the object
 addToQueueTime is an integer available for getting.
@@ -15,6 +14,8 @@ timeSensitivity is an integer available for getting.
 startTime is an integer available for getting and setting.
 endTime is an integer available for getting and setting.
 active is a boolean available for getting and setting.
+TODO: shouldImportOnStart is a boolean available for getting.
+taskParameters is an array available for getting.
 TODO: plugin is a plugin object available for getting.
 TODO: previousTask is a task object available for getting and setting.
 TODO: nextTask is a task object available for getting and setting.
@@ -35,7 +36,7 @@ class Task:
 
     default constructor - never use this outside of the class, use the class methods instead
     '''
-    def __init__(self, taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, plugin):
+    def __init__(self, taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, plugin):
         self.__taskId = taskId
         self.__priority = priority
         self.__pluginId = pluginId
@@ -47,6 +48,7 @@ class Task:
         self.__startTime = startTime
         self.__endTime = endTime
         self.__active = active
+        self.__shouldImportOnStart = shouldImportOnStart
         self.__parameters = parameters
         
         from model import Model # import statement here to avoid circular import
@@ -74,14 +76,14 @@ class Task:
     This is the class method for creating a new task.
     '''
     @classmethod
-    def newTask(cls, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, runTaskId, runPluginId):
+    def newTask(cls, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, runTaskId, runPluginId, shouldImportOnStart=True,):
         from model import Model # import statement here to avoid circular import
-        taskId = Model.createTask(priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, runTaskId, runPluginId)
+        taskId = Model.createTask(priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
         # PluginId should always point to a valid plugin
         plugin = Model.retrievePluginById(pluginId, runTaskId, runPluginId)
 
-        return cls(taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, plugin)
+        return cls(taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
 
     '''
     public Task.newTaskFromPlugin(priority: integer, plugin: plugin, previousTaskId: integer, nextTaskId: integer, addToQueueTime: integer, scheduledRunTime: integer, startTime: integer, endTime: integer, active: boolean, runTaskId: integer, runPluginId: integer) -> Task
@@ -89,12 +91,12 @@ class Task:
     This is the class method for creating a new task when the plugin has already been instantiated.
     '''
     @classmethod
-    def newTaskFromPlugin(cls, priority, plugin, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, runTaskId, runPluginId):
+    def newTaskFromPlugin(cls, priority, plugin, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, runTaskId, runPluginId, shouldImportOnStart=True):
         from model import Model # import statement here to avoid circular import
 
-        taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, runTaskId, runPluginId)
+        taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
-        return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, plugin)
+        return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
     
     '''
     public Task.taskWithId(taskId: integer, priority: integer, pluginId: integer, previousTaskId: integer, nextTaskId: integer, addToQueueTime: integer, scheduledRunTime: integer, startTime: integer, endTime: integer, active: boolean, runTaskId: integer, runPluginId: integer) -> Task
@@ -102,7 +104,7 @@ class Task:
     This is the class method for creating a new task object for a task that has already been created in the database. If a task with the given taskId already exists, it will be returned instead of creating a new one to avoid synchronization issues. Otherwise, a new task will be created.
     '''
     @classmethod
-    def taskWithId(cls, taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, runTaskId, runPluginId):
+    def taskWithId(cls, taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, runTaskId, runPluginId, shouldImportOnStart=True):
         # check if a task with the given taskId already exists to avoid duplicates and synchronization issues
         task = cls.__checkTasksForId(taskId)
         if task is not None:
@@ -113,7 +115,7 @@ class Task:
         # PluginId should always point to a valid plugin
         plugin = Model.retrievePluginById(pluginId, runTaskId, runPluginId)
 
-        return cls(taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, plugin)
+        return cls(taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
 
     '''
     public Task.priorityTask(priority: integer, plugin: plugin, runTaskId: integer, runPluginId: integer) -> Task
@@ -121,7 +123,7 @@ class Task:
     This is the class method for a basic task for addition to the priority queue (rather than the scheduled queue).
     '''
     @classmethod
-    def priorityTask(cls, priority, plugin, parameters, runTaskId, runPluginId):
+    def priorityTask(cls, priority, plugin, parameters, runTaskId, runPluginId, shouldImportOnStart=True):
         from model import Model # import statement here to avoid circular import
 
         previousTaskId = -1
@@ -133,9 +135,9 @@ class Task:
         endTime = -1
         active = True
 
-        taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, runTaskId, runPluginId)
+        taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
-        return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, plugin)
+        return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
 
     '''
     public Task.scheduleTaskTimeStamp(priority: integer, plugin: plugin, scheduledRunTime: integer, runTaskId: integer, runPluginId: integer) -> Task
@@ -143,7 +145,7 @@ class Task:
     This is the class method for a basic task that will be scheduled to run at a certain time.
     '''
     @classmethod
-    def scheduleTaskTimeStamp(cls, priority, plugin, scheduledRunTime, timeSensitivity, parameters, runTaskId, runPluginId):
+    def scheduleTaskTimeStamp(cls, priority, plugin, scheduledRunTime, timeSensitivity, parameters, runTaskId, runPluginId, shouldImportOnStart=True):
         from model import Model # import statement here to avoid circular import
 
         previousTaskId = -1
@@ -153,9 +155,9 @@ class Task:
         endTime = -1
         active = True
 
-        taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, runTaskId, runPluginId)
+        taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
-        return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, plugin)
+        return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
 
     '''
     public Task.scheduleTaskDelta(priority: integer, plugin: plugin, delta: integer, runTaskId: integer, runPluginId: integer) -> Task
@@ -163,7 +165,7 @@ class Task:
     This is the class method for a basic task that will be scheduled to run a certain number of seconds in the future.
     '''
     @classmethod
-    def scheduleTaskDelta(cls, priority, plugin, delta, timeSensitivity, parameters, runTaskId, runPluginId):
+    def scheduleTaskDelta(cls, priority, plugin, delta, timeSensitivity, parameters, runTaskId, runPluginId, shouldImportOnStart=True):
         from model import Model # import statement here to avoid circular import
 
         previousTaskId = -1
@@ -174,9 +176,9 @@ class Task:
         endTime = -1
         active = True
 
-        taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, runTaskId, runPluginId)
+        taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
-        return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, parameters, plugin)
+        return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
 
     '''
     private static Task.__checkTasksForId(taskId: integer) -> Task | None
@@ -231,6 +233,9 @@ class Task:
     
     def getActive(self):
         return self.__active # boolean
+
+    def getShouldImportOnStart(self):
+        return self.__shouldImportOnStart # boolean
 
     def getParameters(self):
         return self.__parameters # any[]

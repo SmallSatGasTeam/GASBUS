@@ -15,6 +15,7 @@ All logging on the satellite should be done using the designated log object. Thi
 Just call the taskManager.py from the command line.
 
 After doing that:
+
 - The task manager will create the priority and scheduled task queues
 - The model will create the database (if necessary) and prepare it for storing data
 - The task manager will schedule a task implementing the startup plugin
@@ -35,17 +36,17 @@ If the desired plugin hasn't already been instantiated, this will call the disco
 
 After creating the plugin object, to schedule the plugin, it must be encapsulated within a task. There are three ways to do this.
 
-1. Add the task directly to the priority queue.
+1.  Add the task directly to the priority queue.
 
         from objects.task import Task
         newTask = Task.priorityTask(priority, newPlugin, pluginParameters, runningTaskId, runningPluginId)
-    
-2. Schedule the task for a certain number of seconds (called the delta) in the future compared to the current time.
+
+2.  Schedule the task for a certain number of seconds (called the delta) in the future compared to the current time.
 
         from objects.task import Task
         newTask = Task.scheduleTaskDelta(priority, newPlugin, delta, timeSensitivity, pluginParameters, runningTaskId, runningPluginId)
 
-3. Schedule the task for a specific date and time in the future.
+3.  Schedule the task for a specific date and time in the future.
 
         from objects.task import Task
         newTask = Task.scheduleTaskTimeStamp(priority, newPlugin, scheduledRunTime, timeSensitivity, pluginParameters, runningTaskId, runningPluginId)
@@ -66,19 +67,33 @@ Documentation
 
 - [x] Document the usage of plugins and tasks
 - [ ] Revamp function comments and statements comments
+- [ ] README.md files in other directories
+- [ ] Add known issues to GitHub
+- [ ] Start wiki entries on GitHub
+- [ ] Describe naming conventions of tasks and plugins
 
 Task Manager
 
 - [ ] Set up the functionality for time sensitivity
+- [x] Import active tasks on startup from database
 
 Task
 
 - [ ] Set start and end times for task run
+- [x] Add field shouldImportOnStartup for if the task should be imported if still active in the database on startup
+- [ ] Redo visual functions for tasks
 
 Plugin
 
 - [ ] Add timeSensitivityPassed() to structure
+- [ ] Add test functionality to run on initial import
+- [ ] Redo visual functions for plugins
+
+DiscoverPlugins
+
+- [ ] Run the test function on each new plugin
 
 Log
 
 - [ ] Create functions for Log.newWarningLog(), Log.newInfoLog(), Log.newDebugLog()
+- [ ] Set specific log levels for warning, info, and debug
