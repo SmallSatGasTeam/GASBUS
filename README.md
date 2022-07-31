@@ -59,19 +59,24 @@ The task will now run after its scheduled time after all higher priority tasks h
 ## Things to do
 
 Overall
+
 [ ] Create test cases to describe edge events and ascertain functionality
 
 Documentation
+
 [x] Document the usage of plugins and tasks
 [ ] Revamp function comments and statements comments
 
 Task Manager
+
 [ ] Set up the functionality for time sensitivity
 
 Task
+
 [ ] Set start and end times for task run
 
 Plugin
+
 [ ] Add timeSensitivityPassed() to structure
 
 Log
