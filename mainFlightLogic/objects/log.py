@@ -25,7 +25,7 @@ class Log:
     PRINT_ERROR = True
     PRINT_WARNING = True
     PRINT_INFO = True
-    PRINT_DEBUG = True
+    PRINT_DEBUG = False
 
     '''
     ----------------------------------------------------------------------------

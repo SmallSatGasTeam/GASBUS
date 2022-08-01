@@ -161,8 +161,8 @@ class Plugin:
 
     This method is called if the task is removed from the priority queue because it has waited too long to run.
     '''
-    def timeSensitivityPassed(self):
-        raise Exception("No timeSensitivityPassed function defined for child task")
+    def expired(self):
+        raise Exception("No expired function defined for child task")
 
     '''
     ----------------------------------------------------------------------------

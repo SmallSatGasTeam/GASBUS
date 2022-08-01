@@ -53,11 +53,15 @@ class TaskManager:
                 latestTimeStamp = Model.createTimeStamp()
                 Log.newDebug(f'Looking for all tasks scheduled to run at {Model.getDateTime(latestTimeStamp)}', 0, 0)
                 if self.__firstPriorityTask is not None:
-                    self.__recursiveTimeSensitivityCheck(self.__firstPriorityTask, latestTimeStamp)
+                    self.__recursiveExpirationTimeCheck(None, self.__firstPriorityTask, latestTimeStamp)
             if self.__firstScheduledTask is not None and self.__firstScheduledTask.getScheduledRunTime() <= Model.createTimeStamp():
                 scheduledTask = self.__firstScheduledTask
                 self.__firstScheduledTask = scheduledTask.getNextTask()
+                if self.__firstScheduledTask is not None:
+                    self.__firstScheduledTask.setPreviousTask(None, 0, 0)
+                    
                 scheduledTask.setNextTask(None, 0, 0)
+                scheduledTask.setPreviousTask(None, 0, 0)
                 self.__addTaskToPriorityQueue(scheduledTask)
             else:
                 task = self.__firstPriorityTask
@@ -66,19 +70,24 @@ class TaskManager:
                     task.start(self)
     
     '''
-    private __recursiveTimeSensitivityCheck(task: task, latestTimeStamp: integer):
+    private __recursiveExpirationTimeCheck(task: task, latestTimeStamp: integer):
 
     This method is used to check if each task in the priority queue has passed its time sensitivity time.
     '''
-    def __recursiveTimeSensitivityCheck(self, task, latestTimeStamp):
-        if (task.getTimeSensitivity() != -1) and (task.getScheduledRunTime() + task.getTimeSensitivity() <= latestTimeStamp):
-            task.getPreviousTask().setNextTask(task.getNextTask(), 0, 0)
+    def __recursiveExpirationTimeCheck(self, previousTask, task, latestTimeStamp):
+        if (task.getExpirationTime() != -1) and (task.getExpirationTime() <= latestTimeStamp):
+            if task == self.__firstPriorityTask:
+                self.__firstPriorityTask = task.getNextTask()
+            else:
+                if previousTask is not None:
+                    previousTask.setNextTask(task.getNextTask(), 0, 0)
+
             if task.getNextTask() is not None:
-                task.getNextTask().setPreviousTask(task.getPreviousTask(), 0, 0)
-            task.timeSensitivityPassed()
+                task.getNextTask().setPreviousTask(previousTask, 0, 0)
+            task.expired()
         
         if task.getNextTask() is not None:
-            self.__recursiveTimeSensitivityCheck(task.getNextTask(), latestTimeStamp)
+            self.__recursiveExpirationTimeCheck(task, task.getNextTask(), latestTimeStamp)
 
     '''
     public addTask(task: Task)

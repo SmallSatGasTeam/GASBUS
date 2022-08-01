@@ -28,5 +28,5 @@ class Test3(Plugin):
     def terminate(self, taskId):
         pass
 
-    def timeSensitivityPassed(self):
+    def expired(self):
         Log.newInfo("Test 3 plugin timed out", 0, self.getPluginId())

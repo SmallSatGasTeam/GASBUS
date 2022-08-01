@@ -553,7 +553,7 @@ class Model:
 
             # if the tasks table doesn't exist, create it
             if cursor.fetchone() is None:
-                cursor.execute("CREATE TABLE tasks (taskId INTEGER PRIMARY KEY, priority INTEGER, pluginId INTEGER, previousTaskId INTEGER, nextTaskId INTEGER, addToQueueTime INTEGER, scheduledRunTime INTEGER, timeSensitivity INTEGER, startTime INTEGER, endTime INTEGER, active INTEGER, shouldImportOnStart INTEGER, parameters TEXT);")
+                cursor.execute("CREATE TABLE tasks (taskId INTEGER PRIMARY KEY, priority INTEGER, pluginId INTEGER, previousTaskId INTEGER, nextTaskId INTEGER, addToQueueTime INTEGER, scheduledRunTime INTEGER, expirationTime INTEGER, startTime INTEGER, endTime INTEGER, active INTEGER, shouldImportOnStart INTEGER, parameters TEXT);")
 
             connection.commit()
             return True
@@ -562,12 +562,12 @@ class Model:
             return False
 
     '''
-    public static createTask(priority: integer, pluginId: integer, previousTaskId: integer, nextTaskId: integer, addToQueueTime: integer, scheduledRunTime: integer, timeSensitivity: integer, startTime: integer, endTime: integer, active: boolean, shouldImportOnStart: boolean, parameters: [any], runTaskId: integer, runPluginId: integer) -> boolean
+    public static createTask(priority: integer, pluginId: integer, previousTaskId: integer, nextTaskId: integer, addToQueueTime: integer, scheduledRunTime: integer, expirationTime: integer, startTime: integer, endTime: integer, active: boolean, shouldImportOnStart: boolean, parameters: [any], runTaskId: integer, runPluginId: integer) -> boolean
 
     Creates a task entry in the database then returns the taskId.
     '''
     @staticmethod
-    def createTask(priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId):
+    def createTask(priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId):
         # set up the connection
         connection = Model.__check_connection(runTaskId, runPluginId)
         if connection and Model.__checkTasksTable(connection):
@@ -576,8 +576,8 @@ class Model:
             databaseParameters = '|||'.join(str(parameter) for parameter in parameters) # used ||| as the delimiter because it is unlikely to exist in the parameters
 
             # insert the new task into the database
-            cursor.execute("""INSERT INTO tasks (priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, databaseParameters))
+            cursor.execute("""INSERT INTO tasks (priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, databaseParameters))
 
             taskId = cursor.lastrowid
 
@@ -599,7 +599,7 @@ class Model:
         if connection and Model.__checkTasksTable(connection):
             # database query
             cursor = connection.cursor()
-            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters
+            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters
                                 FROM tasks
                                 WHERE taskId = ?""", (taskId,))
             result = cursor.fetchone()
@@ -623,7 +623,7 @@ class Model:
         if connection and Model.__checkTasksTable(connection):
             # database query
             cursor = connection.cursor()
-            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters
+            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters
                                 FROM tasks
                                 WHERE pluginId = ?""", (pluginId,))
             results = cursor.fetchall()
@@ -652,7 +652,7 @@ class Model:
         if connection and Model.__checkTasksTable(connection):
             # database query
             cursor = connection.cursor()
-            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters
+            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters
                                 FROM tasks
                                 WHERE addToQueueTime BETWEEN ? AND ?""", (startTime, endTime))
             results = cursor.fetchall()
@@ -681,7 +681,7 @@ class Model:
         if connection and Model.__checkTasksTable(connection):
             # database query
             cursor = connection.cursor()
-            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters
+            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters
                                 FROM tasks
                                 WHERE scheduledRunTime BETWEEN ? AND ?""", (startTime, endTime))
             results = cursor.fetchall()
@@ -709,7 +709,7 @@ class Model:
         if connection and Model.__checkTasksTable(connection):
             # database query
             cursor = connection.cursor()
-            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters
+            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters
                                 FROM tasks
                                 WHERE startTime BETWEEN ? AND ?""", (startTime, endTime))
             results = cursor.fetchall()
@@ -737,7 +737,7 @@ class Model:
         if connection and Model.__checkTasksTable(connection):
             # database query
             cursor = connection.cursor()
-            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, timeSensitivity, startTime, endTime, active, shouldImportOnStart, parameters
+            cursor.execute("""SELECT taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters
                                 FROM tasks
                                 WHERE active = ?""", (active,))
             results = cursor.fetchall()
@@ -821,7 +821,7 @@ class Model:
         return False
     
     '''
-    public static updateTaskScheduledRunTime(taskId: integer, scheduledRunTime: integer, timeSensitivity: integer, runTaskId: integer, runPluginId: integer) -> boolean
+    public static updateTaskScheduledRunTime(taskId: integer, scheduledRunTime: integer, expirationTime: integer, runTaskId: integer, runPluginId: integer) -> boolean
 
     Updates the scheduled run time of a task.
     '''

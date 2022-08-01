@@ -35,10 +35,10 @@ class Test1(Plugin):
         test2Task = Task.priorityTask(200, test2Plugin, [], taskId, self.getPluginId())
         taskManager.addTask(test2Task)
 
-        test2Task2 = Task.scheduleTaskDelta(200, test2Plugin, 6, 10, [], taskId, self.getPluginId())
+        test2Task2 = Task.scheduleTaskDelta(200, test2Plugin, 6, [], taskId, self.getPluginId())
         taskManager.addTask(test2Task2)
 
-        test2Task3 = Task.scheduleTaskDelta(200, test2Plugin, 5, 10, [], taskId, self.getPluginId())
+        test2Task3 = Task.scheduleTaskDelta(200, test2Plugin, 5, [], taskId, self.getPluginId())
         taskManager.addTask(test2Task3)
     
     def terminate(self, taskId):
