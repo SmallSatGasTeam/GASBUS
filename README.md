@@ -74,7 +74,7 @@ Documentation
 
 Task Manager
 
-- [ ] Set up the functionality for time sensitivity
+- [x] Set up the functionality for time sensitivity
 - [x] Import active tasks on startup from database
 
 Task
@@ -85,7 +85,7 @@ Task
 
 Plugin
 
-- [ ] Add timeSensitivityPassed() to structure
+- [x] Add timeSensitivityPassed() to structure
 - [ ] Add test functionality to run on initial import
 - [ ] Redo visual functions for plugins
 

@@ -35,15 +35,28 @@ class Startup(Plugin):
 
         taskManager.addTask(test1Task)
 
+        test2Plugin = Plugin.pluginFromClassName("Test2", taskId, self.getPluginId())
+        test2Task = Task.priorityTask(200, test2Plugin, [], taskId, self.getPluginId())
+
+        taskManager.addTask(test2Task)
+
+        # Setting up the heartbeat
+
         heartbeatPlugin = Plugin.pluginFromClassName("Heartbeat", taskId, self.getPluginId())
         heartbeatTask = Task.priorityTask(10, heartbeatPlugin, [], taskId, self.getPluginId())
 
         taskManager.addTask(heartbeatTask)
 
-        test2Plugin = Plugin.pluginFromClassName("Test2", taskId, self.getPluginId())
-        test2Task = Task.priorityTask(200, test2Plugin, [], taskId, self.getPluginId())
+        # Testing the time sensitivity using the blocker plugin
 
-        taskManager.addTask(test2Task)
+        # blockerPlugin = Plugin.pluginFromClassName("Blocker", taskId, self.getPluginId())
+        # blockerTask = Task.priorityTask(300, blockerPlugin, [], taskId, self.getPluginId(), shouldImportOnStart=False)
+
+        # taskManager.addTask(blockerTask)
+
+        # test3Plugin = Plugin.pluginFromClassName("Test3", taskId, self.getPluginId())
+        # test3Task = Task.scheduleTaskDelta(400, test3Plugin, 1, 1, [], taskId, self.getPluginId(), shouldImportOnStart=False)
+        # taskManager.addTask(test3Task)
     
     def terminate(self, taskId):
         pass

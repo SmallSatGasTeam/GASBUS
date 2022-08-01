@@ -47,7 +47,13 @@ class TaskManager:
     '''
 
     def __runTasks(self):
+        latestTimeStamp = 0
         while True:
+            if Model.createTimeStamp() > latestTimeStamp:
+                latestTimeStamp = Model.createTimeStamp()
+                Log.newDebug(f'Looking for all tasks scheduled to run at {Model.getDateTime(latestTimeStamp)}', 0, 0)
+                if self.__firstPriorityTask is not None:
+                    self.__recursiveTimeSensitivityCheck(self.__firstPriorityTask, latestTimeStamp)
             if self.__firstScheduledTask is not None and self.__firstScheduledTask.getScheduledRunTime() <= Model.createTimeStamp():
                 scheduledTask = self.__firstScheduledTask
                 self.__firstScheduledTask = scheduledTask.getNextTask()
@@ -58,6 +64,21 @@ class TaskManager:
                 if task is not None:
                     self.__firstPriorityTask = task.getNextTask()
                     task.start(self)
+    
+    '''
+    private __recursiveTimeSensitivityCheck(task: task, latestTimeStamp: integer):
+
+    This method is used to check if each task in the priority queue has passed its time sensitivity time.
+    '''
+    def __recursiveTimeSensitivityCheck(self, task, latestTimeStamp):
+        if task.getScheduledRunTime() + task.getTimeSensitivity() >= latestTimeStamp:
+            task.getPreviousTask().setNextTask(task.getNextTask(), 0, 0)
+            if task.getNextTask() is not None:
+                task.getNextTask().setPreviousTask(task.getPreviousTask(), 0, 0)
+            task.timeSensitivityPassed()
+        
+        if task.getNextTask() is not None:
+            self.__recursiveTimeSensitivityCheck(task.getNextTask(), latestTimeStamp)
 
     '''
     public addTask(task: Task)

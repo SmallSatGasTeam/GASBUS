@@ -157,6 +157,14 @@ class Plugin:
         raise Exception("No terminate function defined for child task")
 
     '''
+    public timeSensitivityPassed()
+
+    This method is called if the task is removed from the priority queue because it has waited too long to run.
+    '''
+    def timeSensitivityPassed(self):
+        raise Exception("No timeSensitivityPassed function defined for child task")
+
+    '''
     ----------------------------------------------------------------------------
     Visual methods
     

@@ -402,8 +402,7 @@ class Task:
     This method is called if the task expires without executing because the time sensitivity has passed.
     '''
     def timeSensitivityPassed(self):
-        # TODO: call the plugin's timeSensitivityPassed method
-        pass
+        self.getPlugin().timeSensitivityPassed()
 
     '''
     ----------------------------------------------------------------------------
