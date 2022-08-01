@@ -14,7 +14,7 @@ expirationTime is an integer available for getting.
 startTime is an integer available for getting and setting.
 endTime is an integer available for getting and setting.
 active is a boolean available for getting and setting.
-TODO: shouldImportOnStart is a boolean available for getting.
+shouldImportOnStart is a boolean available for getting.
 taskParameters is an array available for getting.
 TODO: plugin is a plugin object available for getting.
 TODO: previousTask is a task object available for getting and setting.
@@ -23,6 +23,7 @@ TODO: nextTask is a task object available for getting and setting.
 TODO: add task methods
 '''
 
+from objects.log import Log
 class Task:
     # class variables
     tasks = [] # a list of all instantiated tasks
@@ -37,6 +38,8 @@ class Task:
     default constructor - never use this outside of the class, use the class methods instead
     '''
     def __init__(self, taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, plugin):
+        Log.newDebug(f'Task initialization for {taskId}', 0, 0)
+
         self.__taskId = taskId
         self.__priority = priority
         self.__pluginId = pluginId
@@ -60,6 +63,8 @@ class Task:
 
         Task.tasks.append(self)
 
+        Log.newDebug(f'Setting up previous and next tasks for task {taskId}', 0, 0)
+
         if previousTaskId != -1:
             self.__previousTask = Task.__checkTasksForId(previousTaskId)
             if self.__previousTask == None:
@@ -70,6 +75,8 @@ class Task:
             if self.__nextTask == None:
                 self.__nextTask = Model.retrieveTaskById(nextTaskId, 0, 0)
 
+        Log.newDebug(f'Task {repr(self)} instantiated.', 0, 0)
+
     '''
     public Task.newTask(priority: integer, pluginId: integer, previousTaskId: integer, nextTaskId: integer, addToQueueTime: integer, scheduledRunTime: integer, startTime: integer, endTime: integer, active: boolean, runTaskId: integer, runPluginId: integer) -> Task
 
@@ -77,12 +84,16 @@ class Task:
     '''
     @classmethod
     def newTask(cls, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, parameters, runTaskId, runPluginId, shouldImportOnStart=True,):
+        Log.newDebug(f'Task.newTask run... setting up task in model', runTaskId, runPluginId)
+
         from model import Model # import statement here to avoid circular import
         taskId = Model.createTask(priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
+        Log.newDebug(f'Getting plugin for task {taskId} from model', runTaskId, runPluginId)
         # PluginId should always point to a valid plugin
         plugin = Model.retrievePluginById(pluginId, runTaskId, runPluginId)
 
+        Log.newDebug(f'Sending task {taskId} to Task constructor', runTaskId, runPluginId)
         return cls(taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
 
     '''
@@ -92,10 +103,13 @@ class Task:
     '''
     @classmethod
     def newTaskFromPlugin(cls, priority, plugin, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, parameters, runTaskId, runPluginId, shouldImportOnStart=True):
+        Log.newDebug(f'Task.newTaskFromPlugin run... setting up task in model', runTaskId, runPluginId)
+
         from model import Model # import statement here to avoid circular import
 
         taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
+        Log.newDebug(f'Sending task {taskId} to Task constructor', runTaskId, runPluginId)
         return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
     
     '''
@@ -105,16 +119,21 @@ class Task:
     '''
     @classmethod
     def taskWithId(cls, taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, parameters, runTaskId, runPluginId, shouldImportOnStart=True):
+        Log.newDebug(f'Task.taskWithId run... checking for instantiated tasks with same id', runTaskId, runPluginId)
+
         # check if a task with the given taskId already exists to avoid duplicates and synchronization issues
         task = cls.__checkTasksForId(taskId)
         if task is not None:
             return task
 
+        Log.newDebug(f'Task.taskWithId run... setting up task in model', runTaskId, runPluginId)
         from model import Model # import statement here to avoid circular import
         
+        Log.newDebug(f'Getting plugin for task {taskId} from model', runTaskId, runPluginId)
         # PluginId should always point to a valid plugin
         plugin = Model.retrievePluginById(pluginId, runTaskId, runPluginId)
 
+        Log.newDebug(f'Sending task {taskId} to Task constructor', runTaskId, runPluginId)
         return cls(taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
 
     '''
@@ -124,6 +143,7 @@ class Task:
     '''
     @classmethod
     def priorityTask(cls, priority, plugin, parameters, runTaskId, runPluginId, expirationTime=-1, expirationDelta=-1, shouldImportOnStart=True):
+        Log.newDebug(f'Task.priorityTask run... setting up task in model using passed and default values', runTaskId, runPluginId)
         from model import Model # import statement here to avoid circular import
 
         previousTaskId = -1
@@ -136,9 +156,12 @@ class Task:
 
         if expirationDelta != -1:
             expirationTime = Model.createTimeStamp() + expirationDelta
-
+            Log.newDebug(f'Setting expiration time to {expirationTime}', runTaskId, runPluginId)
+        
+        Log.newDebug('Creating task in model', runTaskId, runPluginId)
         taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
+        Log.newDebug(f'Sending task {taskId} to Task constructor', runTaskId, runPluginId)
         return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
 
     '''
@@ -148,6 +171,7 @@ class Task:
     '''
     @classmethod
     def scheduleTaskTimeStamp(cls, priority, plugin, scheduledRunTime, parameters, runTaskId, runPluginId, expirationTime=-1, expirationDelta=-1, shouldImportOnStart=True):
+        Log.newDebug(f'Task.scheduleTaskTimeStamp run... setting up task in model using passed and default values', runTaskId, runPluginId)
         from model import Model # import statement here to avoid circular import
 
         previousTaskId = -1
@@ -159,9 +183,12 @@ class Task:
 
         if expirationDelta != -1:
             expirationTime = scheduledRunTime + expirationDelta
+            Log.newDebug(f'Setting expiration time to {expirationTime}', runTaskId, runPluginId)
 
+        Log.newDebug('Creating task in model', runTaskId, runPluginId)
         taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
+        Log.newDebug(f'Sending task {taskId} to Task constructor', runTaskId, runPluginId)
         return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
 
     '''
@@ -171,6 +198,7 @@ class Task:
     '''
     @classmethod
     def scheduleTaskDelta(cls, priority, plugin, delta, parameters, runTaskId, runPluginId, expirationTime=-1, expirationDelta=-1, shouldImportOnStart=True):
+        Log.newDebug(f'Task.scheduleTaskDelta run... setting up task in model using passed and default values', runTaskId, runPluginId)
         from model import Model # import statement here to avoid circular import
 
         previousTaskId = -1
@@ -183,9 +211,12 @@ class Task:
 
         if expirationDelta != -1:
             expirationTime = scheduledRunTime + expirationDelta
+            Log.newDebug(f'Setting expiration time to {expirationTime}', runTaskId, runPluginId)
 
+        Log.newDebug('Creating task in model', runTaskId, runPluginId)
         taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
+        Log.newDebug(f'Sending task {taskId} to Task constructor', runTaskId, runPluginId)
         return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
 
     '''
@@ -381,15 +412,20 @@ class Task:
     This method is used to start the task.
     '''
     def start(self, taskManager):
+        Log.newDebug(f'Task.start() for task {self.__taskId}', self.__taskId, self.__pluginId)
         self.__taskManager = taskManager
 
+        Log.newDebug(f'Setting task {self.__taskId} to inactive and setting start time', self.__taskId, self.__pluginId)
         # set active to false before we start running in case something goes wrong, we don't continually boot with the running task active
         self.setActive(False, self.getTaskId(), self.getPluginId())
 
         from model import Model
         self.setStartTime(Model.createTimeStamp(), self.getTaskId(), self.getPluginId())
 
+        Log.newDebug(f'Starting the plugin for task {self.__taskId}', self.__taskId, self.__pluginId)
         self.__plugin.start(self.__taskId, self.__taskManager, self.__parameters)
+
+        Log.newDebug(f'Calling terminate function for task {self.__taskId}', self.__taskId, self.__pluginId)
         self.terminate()
     
     '''
@@ -398,11 +434,14 @@ class Task:
     This method is used to clean up the task after execution and tell the task manager to start the next task.
     '''
     def terminate(self):
+        Log.newDebug(f'Task.terminate() for task {self.__taskId}', self.__taskId, self.__pluginId)
+
+        Log.newDebug(f'Setting task {self.__taskId} end time', self.__taskId, self.__pluginId)
         from model import Model
         self.setEndTime(Model.createTimeStamp(), self.getTaskId(), self.getPluginId())
         
+        Log.newDebug(f'Terminating the plugin for task {self.__taskId}', self.__taskId, self.__pluginId)
         self.__plugin.terminate(self.__taskId, self.__taskManager, self.__parameters)
-        pass
 
     '''
     public expirationTimePassed()
@@ -410,7 +449,12 @@ class Task:
     This method is called if the task expires without executing because the time sensitivity has passed.
     '''
     def expired(self):
+        Log.newDebug(f'Task.expired() for task {self.__taskId}', self.__taskId, self.__pluginId)
+
+        Log.newDebug(f'Setting task {self.__taskId} to inactive', self.__taskId, self.__pluginId)
         self.setActive(False, 0, self.getPluginId())
+
+        Log.newDebug(f'Calling expired function for task {self.__taskId}', self.__taskId, self.__pluginId)
         self.getPlugin().expired(self.__taskManager, self.__parameters)
 
     '''
@@ -422,12 +466,8 @@ class Task:
     '''
     # string function
     def __str__(self):
-        # TODO: update with new variables
-
-        return f'Task {self.__taskId} with priority {self.__priority} runs plugin {self.__pluginId}'
+        return f'Task {self.__taskId} with priority {self.__priority} runs plugin {self.__pluginId} at {self.__scheduledRunTime}'
 
     # represent function
     def __repr__(self):
-        # TODO: update with new variables
-
-        return f'Task(taskId={self.__taskId}, priority={self.__priority}, pluginId={self.__pluginId})'
+        return f'Task(taskId={self.__taskId}, priority={self.__priority}, pluginId={self.__pluginId}, previousTaskId={self.__previousTaskId}, nextTaskId={self.__nextTaskId}, scheduledRunTime={self.__scheduledRunTime}, expirationTime={self.__expirationTime}, startTime={self.__startTime}, endTime={self.__endTime}, active={self.__active}, shouldImportOnStart={self.__shouldImportOnStart}, parameters={self.__parameters})'

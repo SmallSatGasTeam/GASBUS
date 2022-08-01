@@ -63,10 +63,10 @@ class Log:
         echoMarker = False
 
         if level == cls.ERROR_LEVEL and cls.PRINT_ERROR:
-            print(f'ERROR   | {Model.getDateTime(timeStamp)} | Task: {taskId:05} | Plugin: {pluginId:03} | {message}')
+            print(f'ERROR   | {Model.getDateTime(timeStamp)} | Task: {taskId:05} | Plugin: ****{pluginId:03} | {message}')
         
         if level == cls.WARNING_LEVEL and cls.PRINT_WARNING:
-            print(f'WARNING | {Model.getDateTime(timeStamp)} | Task: {taskId:05} | Plugin: {pluginId:03} | {message}')
+            print(f'WARNING | {Model.getDateTime(timeStamp)} | Task: {taskId:05} | Plugin: **{pluginId:03} | {message}')
         
         if level == cls.INFO_LEVEL and cls.PRINT_INFO:
             print(f'INFO    | {Model.getDateTime(timeStamp)} | Task: {taskId:05} | Plugin: {pluginId:03} | {message}')
