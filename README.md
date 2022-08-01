@@ -29,7 +29,7 @@ After doing that:
 
 The primary unit that provides functionality is the plugin. Plugins aren't called directly, but rather are encapsulated in tasks and then scheduled in the task manager. The reason for this is to allow the tasks to implement all of the functionality related to scheduling and for the plugin to focus primarily on the unique functionality for which the plugin is created.
 
-For information on creating plugins, see [a relative link](plugins/README.md).
+For information on creating plugins, see the [README in plugins](mainFlightLogic/plugins/README.md#creating-a-new-plugin).
 
 The process for instantiating a new plugin is simple:
 
