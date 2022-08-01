@@ -22,11 +22,11 @@ class Test3(Plugin):
 
     This method is used to start the plugin.
     '''
-    def start(self, taskId, taskManager):
+    def start(self, taskId, taskManager, taskParameters):
         Log.newInfo("Test 3 plugin started", taskId, self.getPluginId())
     
-    def terminate(self, taskId):
+    def terminate(self, taskId, taskManager, taskParameters):
         pass
 
-    def expired(self):
+    def expired(self, taskManager, taskParameters):
         Log.newInfo("Test 3 plugin timed out", 0, self.getPluginId())

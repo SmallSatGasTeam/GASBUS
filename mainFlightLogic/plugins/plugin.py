@@ -145,7 +145,7 @@ class Plugin:
 
     This method is used to start the plugin.
     '''
-    def start(self):
+    def start(self, taskId, taskManager, taskParameters):
         raise Exception("No startTask function defined for child task")
     
     '''
@@ -153,7 +153,7 @@ class Plugin:
 
     This method is used to clean up the plugin after execution.
     '''
-    def terminate(self):
+    def terminate(self, taskId, taskManager, taskParameters):
         raise Exception("No terminate function defined for child task")
 
     '''
@@ -161,7 +161,7 @@ class Plugin:
 
     This method is called if the task is removed from the priority queue because it has waited too long to run.
     '''
-    def expired(self):
+    def expired(self, taskManager, taskParameters):
         raise Exception("No expired function defined for child task")
 
     '''

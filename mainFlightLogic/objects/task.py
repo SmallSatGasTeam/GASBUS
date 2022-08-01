@@ -10,7 +10,7 @@ previousTaskId is an integer available for getting and setting. TODO: move away 
 nextTaskId is an integer available for getting and setting. TODO: move away from using ids on the object
 addToQueueTime is an integer available for getting.
 scheduledRunTime is an integer available for getting and setting.
-expirationTime is an integer available for getting. TODO: change to expirationTime
+expirationTime is an integer available for getting.
 startTime is an integer available for getting and setting.
 endTime is an integer available for getting and setting.
 active is a boolean available for getting and setting.
@@ -123,7 +123,7 @@ class Task:
     This is the class method for a basic task for addition to the priority queue (rather than the scheduled queue).
     '''
     @classmethod
-    def priorityTask(cls, priority, plugin, parameters, runTaskId, runPluginId, expirationTime=-1, shouldImportOnStart=True):
+    def priorityTask(cls, priority, plugin, parameters, runTaskId, runPluginId, expirationTime=-1, expirationDelta=-1, shouldImportOnStart=True):
         from model import Model # import statement here to avoid circular import
 
         previousTaskId = -1
@@ -133,6 +133,9 @@ class Task:
         startTime = -1
         endTime = -1
         active = True
+
+        if expirationDelta != -1:
+            expirationTime = Model.createTimeStamp() + expirationDelta
 
         taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
@@ -144,7 +147,7 @@ class Task:
     This is the class method for a basic task that will be scheduled to run at a certain time.
     '''
     @classmethod
-    def scheduleTaskTimeStamp(cls, priority, plugin, scheduledRunTime, parameters, runTaskId, runPluginId, expirationTime=-1, shouldImportOnStart=True):
+    def scheduleTaskTimeStamp(cls, priority, plugin, scheduledRunTime, parameters, runTaskId, runPluginId, expirationTime=-1, expirationDelta=-1, shouldImportOnStart=True):
         from model import Model # import statement here to avoid circular import
 
         previousTaskId = -1
@@ -153,6 +156,9 @@ class Task:
         startTime = -1
         endTime = -1
         active = True
+
+        if expirationDelta != -1:
+            expirationTime = scheduledRunTime + expirationDelta
 
         taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
@@ -164,7 +170,7 @@ class Task:
     This is the class method for a basic task that will be scheduled to run a certain number of seconds in the future.
     '''
     @classmethod
-    def scheduleTaskDelta(cls, priority, plugin, delta, parameters, runTaskId, runPluginId, expirationTime=-1, shouldImportOnStart=True):
+    def scheduleTaskDelta(cls, priority, plugin, delta, parameters, runTaskId, runPluginId, expirationTime=-1, expirationDelta=-1, shouldImportOnStart=True):
         from model import Model # import statement here to avoid circular import
 
         previousTaskId = -1
@@ -174,6 +180,9 @@ class Task:
         startTime = -1
         endTime = -1
         active = True
+
+        if expirationDelta != -1:
+            expirationTime = scheduledRunTime + expirationDelta
 
         taskId = Model.createTask(priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, runTaskId, runPluginId)
 
@@ -380,7 +389,7 @@ class Task:
         from model import Model
         self.setStartTime(Model.createTimeStamp(), self.getTaskId(), self.getPluginId())
 
-        self.__plugin.start(self.__taskId, self.__taskManager)
+        self.__plugin.start(self.__taskId, self.__taskManager, self.__parameters)
         self.terminate()
     
     '''
@@ -392,7 +401,7 @@ class Task:
         from model import Model
         self.setEndTime(Model.createTimeStamp(), self.getTaskId(), self.getPluginId())
         
-        self.__plugin.terminate(self.__taskId)
+        self.__plugin.terminate(self.__taskId, self.__taskManager, self.__parameters)
         pass
 
     '''
@@ -402,7 +411,7 @@ class Task:
     '''
     def expired(self):
         self.setActive(False, 0, self.getPluginId())
-        self.getPlugin().expired()
+        self.getPlugin().expired(self.__taskManager, self.__parameters)
 
     '''
     ----------------------------------------------------------------------------

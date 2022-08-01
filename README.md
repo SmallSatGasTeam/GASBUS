@@ -14,6 +14,8 @@ All logging on the satellite should be done using the designated log object. Thi
 
 Just call the taskManager.py from the command line.
 
+    python3 taskManager.py
+
 After doing that:
 
 - The task manager will create the priority and scheduled task queues
@@ -27,7 +29,9 @@ After doing that:
 
 The primary unit that provides functionality is the plugin. Plugins aren't called directly, but rather are encapsulated in tasks and then scheduled in the task manager. The reason for this is to allow the tasks to implement all of the functionality related to scheduling and for the plugin to focus primarily on the unique functionality for which the plugin is created.
 
-The process for creating a new plugin is simple:
+For information on creating plugins, see [a relative link](plugins/README.md).
+
+The process for instantiating a new plugin is simple:
 
     from plugins.plugin import Plugin
     newPlugin = Plugin.pluginFromClassName("[name of plugin]", runningTaskId, runningPluginId)
@@ -70,7 +74,7 @@ Documentation
 - [ ] README.md files in other directories
 - [ ] Add known issues to GitHub
 - [ ] Start wiki entries on GitHub
-- [ ] Describe naming conventions of tasks and plugins
+- [x] Describe naming conventions of tasks and plugins
 - [ ] Update README.md to include the new task call structure
 
 Task Manager
@@ -87,8 +91,8 @@ Task
 - [ ] Redo visual functions for tasks
 - [x] Rename timeSensitivity to expirationTime
 - [ ] Add more debug logs
-- [ ] Ability to add task with expirationTime expressed as delta from scheduledRunTime (can be implemented as extra optional parameter)
-- [ ] Set up task parameters
+- [x] Ability to add task with expirationTime expressed as delta from scheduledRunTime (can be implemented as extra optional parameter)
+- [x] Set up task parameters
 
 Plugin
 

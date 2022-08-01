@@ -22,8 +22,11 @@ class Test2(Plugin):
 
     This method is used to start the plugin.
     '''
-    def start(self, taskId, taskManager):
-        Log.newInfo("Test 2 plugin started", taskId, self.getPluginId())
+    def start(self, taskId, taskManager, taskParameters):
+        Log.newInfo(f'Test 2 plugin started with priority {taskParameters[0]} and run {taskParameters[1]}', taskId, self.getPluginId())
     
-    def terminate(self, taskId):
+    def terminate(self, taskId, taskManager, taskParameters):
+        pass
+    
+    def expired(self, taskManager, taskParameters):
         pass

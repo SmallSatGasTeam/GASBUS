@@ -22,7 +22,7 @@ class Test1(Plugin):
 
     This method is used to start the plugin.
     '''
-    def start(self, taskId, taskManager):
+    def start(self, taskId, taskManager, taskParameters):
         Log.newInfo("Test 1 plugin started", taskId, self.getPluginId())
 
         from objects.task import Task
@@ -32,14 +32,17 @@ class Test1(Plugin):
         from objects.task import Task
         from model import Model
 
-        test2Task = Task.priorityTask(200, test2Plugin, [], taskId, self.getPluginId())
+        test2Task = Task.priorityTask(200, test2Plugin, [200, 'immediate'], taskId, self.getPluginId())
         taskManager.addTask(test2Task)
 
-        test2Task2 = Task.scheduleTaskDelta(200, test2Plugin, 6, [], taskId, self.getPluginId())
+        test2Task2 = Task.scheduleTaskDelta(200, test2Plugin, 6, [200, '6 seconds'], taskId, self.getPluginId())
         taskManager.addTask(test2Task2)
 
-        test2Task3 = Task.scheduleTaskDelta(200, test2Plugin, 5, [], taskId, self.getPluginId())
+        test2Task3 = Task.scheduleTaskDelta(200, test2Plugin, 5, [200, '5 seconds'], taskId, self.getPluginId())
         taskManager.addTask(test2Task3)
     
-    def terminate(self, taskId):
+    def terminate(self, taskId, taskManager, taskParameters):
+        pass
+
+    def expired(self, taskManager, taskParameters):
         pass

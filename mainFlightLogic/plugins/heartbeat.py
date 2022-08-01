@@ -22,15 +22,23 @@ class Heartbeat(Plugin):
 
     This method is used to start the plugin.
     '''
-    def start(self, taskId, taskManager):
-        Log.newInfo("Toggle heartbeat", taskId, self.getPluginId())
+    def start(self, taskId, taskManager, taskParameters):
+        heartbeatSetting = taskParameters[0]
+
+        heartbeatSettingName = "low"
+        if heartbeatSetting:
+            heartbeatSettingName = "high"
+        
+        Log.newInfo(f'Toggle heartbeat {heartbeatSettingName}', taskId, self.getPluginId())
 
         from objects.task import Task
-        from model import Model
         
-        heartbeatTask = Task.scheduleTaskDelta(10, self, 4, [], taskId, self.getPluginId(), expirationTime=Model.createTimeStamp() + 8, shouldImportOnStart=False)
+        heartbeatTask = Task.scheduleTaskDelta(10, self, 4, [(not heartbeatSetting)], taskId, self.getPluginId(), expirationDelta=4, shouldImportOnStart=False)
 
         taskManager.addTask(heartbeatTask)
     
-    def terminate(self, taskId):
+    def terminate(self, taskId, taskManager, taskParameters):
+        pass
+
+    def expired(self, taskManager, taskParameters):
         pass
