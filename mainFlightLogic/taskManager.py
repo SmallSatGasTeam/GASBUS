@@ -71,7 +71,7 @@ class TaskManager:
     This method is used to check if each task in the priority queue has passed its time sensitivity time.
     '''
     def __recursiveTimeSensitivityCheck(self, task, latestTimeStamp):
-        if task.getScheduledRunTime() + task.getTimeSensitivity() >= latestTimeStamp:
+        if (task.getTimeSensitivity() != -1) and (task.getScheduledRunTime() + task.getTimeSensitivity() <= latestTimeStamp):
             task.getPreviousTask().setNextTask(task.getNextTask(), 0, 0)
             if task.getNextTask() is not None:
                 task.getNextTask().setPreviousTask(task.getPreviousTask(), 0, 0)

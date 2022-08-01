@@ -76,18 +76,21 @@ Task Manager
 
 - [x] Set up the functionality for time sensitivity
 - [x] Import active tasks on startup from database
+- [ ] Rename timeSensitivity to expiration
 
 Task
 
 - [x] Set start and end times for task run
 - [x] Add field shouldImportOnStartup for if the task should be imported if still active in the database on startup
 - [ ] Redo visual functions for tasks
+- [ ] Rename timeSensitivity to expiration
 
 Plugin
 
 - [x] Add timeSensitivityPassed() to structure
 - [ ] Add test functionality to run on initial import
 - [ ] Redo visual functions for plugins
+- [ ] Rename timeSensitivityPassed to expired
 
 DiscoverPlugins
 
