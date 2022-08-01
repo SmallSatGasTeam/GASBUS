@@ -49,14 +49,14 @@ class Startup(Plugin):
 
         # Testing the time sensitivity using the blocker plugin
 
-        blockerPlugin = Plugin.pluginFromClassName("Blocker", taskId, self.getPluginId())
-        blockerTask = Task.priorityTask(300, blockerPlugin, [], taskId, self.getPluginId(), shouldImportOnStart=False)
+        # blockerPlugin = Plugin.pluginFromClassName("Blocker", taskId, self.getPluginId())
+        # blockerTask = Task.priorityTask(300, blockerPlugin, [], taskId, self.getPluginId(), shouldImportOnStart=False)
 
-        taskManager.addTask(blockerTask)
+        # taskManager.addTask(blockerTask)
 
-        test3Plugin = Plugin.pluginFromClassName("Test3", taskId, self.getPluginId())
-        test3Task = Task.scheduleTaskDelta(400, test3Plugin, 1, [], taskId, self.getPluginId(), expirationTime=Model.createTimeStamp() + 2, shouldImportOnStart=False)
-        taskManager.addTask(test3Task)
+        # test3Plugin = Plugin.pluginFromClassName("Test3", taskId, self.getPluginId())
+        # test3Task = Task.scheduleTaskDelta(400, test3Plugin, 1, [], taskId, self.getPluginId(), expirationTime=Model.createTimeStamp() + 2, shouldImportOnStart=False)
+        # taskManager.addTask(test3Task)
     
     def terminate(self, taskId):
         pass

@@ -71,6 +71,7 @@ Documentation
 - [ ] Add known issues to GitHub
 - [ ] Start wiki entries on GitHub
 - [ ] Describe naming conventions of tasks and plugins
+- [ ] Update README.md to include the new task call structure
 
 Task Manager
 
@@ -86,6 +87,8 @@ Task
 - [ ] Redo visual functions for tasks
 - [x] Rename timeSensitivity to expirationTime
 - [ ] Add more debug logs
+- [ ] Ability to add task with expirationTime expressed as delta from scheduledRunTime (can be implemented as extra optional parameter)
+- [ ] Set up task parameters
 
 Plugin
 
@@ -94,6 +97,7 @@ Plugin
 - [ ] Redo visual functions for plugins
 - [x] Rename timeSensitivityPassed to expired
 - [ ] In all plugins, add more debug logs
+- [ ] Set up task parameters
 
 DiscoverPlugins
 
@@ -103,3 +107,10 @@ Log
 
 - [x] Create functions for Log.newErrorLog(), Log.newWarningLog(), Log.newInfoLog(), Log.newDebugLog()
 - [x] Set specific log levels for error, warning, info, and debug
+
+Unit Testing
+
+- [ ] Add unit tests to the TaskManager
+- [ ] Add unit tests to the Model
+- [ ] Add unit tests to the objects
+- [ ] Add unit tests to the plugins
