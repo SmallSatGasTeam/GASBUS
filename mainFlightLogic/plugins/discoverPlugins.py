@@ -23,15 +23,11 @@ class DiscoverPlugins(Plugin):
     This method is used to start the plugin.
     '''
     def start(self, taskId, taskManager):
-        Log.newLog("Discover task plugin started", taskId, self.getPluginId(), 100)
+        Log.newInfo("Discover task plugin started", taskId, self.getPluginId())
+        self.discoverPlugins(taskId, self.getPluginId())
     
     def terminate(self, taskId):
         pass
-
-        # module = __import__('plugins.heartbeat', fromlist=['Heartbeat'])
-        # importClass = getattr(module, 'Heartbeat')
-
-        # print(importClass)
 
     '''
     public static discoverPlugins(self, taskId, pluginId)

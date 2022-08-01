@@ -79,7 +79,7 @@ Task Manager
 
 Task
 
-- [ ] Set start and end times for task run
+- [x] Set start and end times for task run
 - [x] Add field shouldImportOnStartup for if the task should be imported if still active in the database on startup
 - [ ] Redo visual functions for tasks
 
@@ -95,5 +95,5 @@ DiscoverPlugins
 
 Log
 
-- [ ] Create functions for Log.newWarningLog(), Log.newInfoLog(), Log.newDebugLog()
-- [ ] Set specific log levels for warning, info, and debug
+- [x] Create functions for Log.newErrorLog(), Log.newWarningLog(), Log.newInfoLog(), Log.newDebugLog()
+- [x] Set specific log levels for error, warning, info, and debug

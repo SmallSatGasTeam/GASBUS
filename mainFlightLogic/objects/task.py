@@ -378,6 +378,9 @@ class Task:
         # set active to false before we start running in case something goes wrong, we don't continually boot with the running task active
         self.setActive(False, self.getTaskId(), self.getPluginId())
 
+        from model import Model
+        self.setStartTime(Model.createTimeStamp(), self.getTaskId(), self.getPluginId())
+
         self.__plugin.start(self.__taskId, self.__taskManager)
         self.terminate()
     
@@ -387,6 +390,9 @@ class Task:
     This method is used to clean up the task after execution and tell the task manager to start the next task.
     '''
     def terminate(self):
+        from model import Model
+        self.setEndTime(Model.createTimeStamp(), self.getTaskId(), self.getPluginId())
+        
         self.__plugin.terminate(self.__taskId)
         pass
 

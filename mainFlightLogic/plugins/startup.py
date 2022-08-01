@@ -23,7 +23,7 @@ class Startup(Plugin):
     This method is used to start the plugin.
     '''
     def start(self, taskId, taskManager):
-        Log.newLog("Startup plugin started", taskId, self.getPluginId(), 100)
+        Log.newInfo("Startup plugin started", taskId, self.getPluginId())
 
         # Adding tasks for testing purposes
 

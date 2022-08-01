@@ -16,7 +16,16 @@ echoMarker is a boolean available for getting and setting.
 class Log:
     # class variables
     logs = [] # a list of all instantiated logs
-    PRINT_LOG = True
+
+    ERROR_LEVEL = 100
+    WARNING_LEVEL = 200
+    INFO_LEVEL = 300
+    DEBUG_LEVEL = 400
+
+    PRINT_ERROR = True
+    PRINT_WARNING = True
+    PRINT_INFO = True
+    PRINT_DEBUG = True
 
     '''
     ----------------------------------------------------------------------------
@@ -53,8 +62,17 @@ class Log:
         sentMarker = False
         echoMarker = False
 
-        if cls.PRINT_LOG:
-            print(f'{level:03} | {Model.getDateTime(timeStamp)} | Task: {taskId:03} | Plugin: {pluginId:03} | {message}')
+        if level == cls.ERROR_LEVEL and cls.PRINT_ERROR:
+            print(f'ERROR   | {Model.getDateTime(timeStamp)} | Task: {taskId:03} | Plugin: {pluginId:03} | {message}')
+        
+        if level == cls.WARNING_LEVEL and cls.PRINT_WARNING:
+            print(f'WARNING | {Model.getDateTime(timeStamp)} | Task: {taskId:03} | Plugin: {pluginId:03} | {message}')
+        
+        if level == cls.INFO_LEVEL and cls.PRINT_INFO:
+            print(f'INFO    | {Model.getDateTime(timeStamp)} | Task: {taskId:03} | Plugin: {pluginId:03} | {message}')
+
+        if level == cls.DEBUG_LEVEL and cls.PRINT_DEBUG:
+            print(f'DEBUG   | {Model.getDateTime(timeStamp)} | Task: {taskId:03} | Plugin: {pluginId:03} | {message}')
 
         return cls(logId, message, taskId, pluginId, level, timeStamp, sentMarker, echoMarker)
 
@@ -71,6 +89,42 @@ class Log:
             return log
 
         return cls(logId, message, taskId, pluginId, level, timeStamp, sentMarker, echoMarker)
+
+    '''
+    public Log.newError(message: string, taskId: integer, pluginId: integer) -> Log
+
+    This is the class method for creating a new error log.
+    '''
+    @classmethod
+    def newError(cls, message, taskId, pluginId):
+        return cls.newLog(message, taskId, pluginId, cls.ERROR_LEVEL)
+    
+    '''
+    public Log.newWarning(message: string, taskId: integer, pluginId: integer) -> Log
+
+    This is the class method for creating a new warning log.
+    '''
+    @classmethod
+    def newWarning(cls, message, taskId, pluginId):
+        return cls.newLog(message, taskId, pluginId, cls.WARNING_LEVEL)
+
+    '''
+    public Log.newInfo(message: string, taskId: integer, pluginId: integer) -> Log
+
+    This is the class method for creating a new info log.
+    '''
+    @classmethod
+    def newInfo(cls, message, taskId, pluginId):
+        return cls.newLog(message, taskId, pluginId, cls.INFO_LEVEL)
+
+    '''
+    public Log.newDebug(message: string, taskId: integer, pluginId: integer) -> Log
+
+    This is the class method for creating a new debug log.
+    '''
+    @classmethod
+    def newDebug(cls, message, taskId, pluginId):
+        return cls.newLog(message, taskId, pluginId, cls.DEBUG_LEVEL)
 
     '''
     private static Log.__checkLogsForId(logId: integer) -> Log | None

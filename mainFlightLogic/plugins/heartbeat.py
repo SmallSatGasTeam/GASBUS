@@ -23,7 +23,7 @@ class Heartbeat(Plugin):
     This method is used to start the plugin.
     '''
     def start(self, taskId, taskManager):
-        Log.newLog("Toggle heartbeat", taskId, self.getPluginId(), 100)
+        Log.newInfo("Toggle heartbeat", taskId, self.getPluginId())
 
         from objects.task import Task
         from model import Model

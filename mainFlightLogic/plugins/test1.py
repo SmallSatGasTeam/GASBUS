@@ -23,7 +23,7 @@ class Test1(Plugin):
     This method is used to start the plugin.
     '''
     def start(self, taskId, taskManager):
-        Log.newLog("Test 1 plugin started", taskId, self.getPluginId(), 100)
+        Log.newInfo("Test 1 plugin started", taskId, self.getPluginId())
 
         from objects.task import Task
         from plugins.test2 import Test2
