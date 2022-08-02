@@ -30,7 +30,6 @@ class Startup(Plugin):
         test1Plugin = Plugin.pluginFromClassName("Test1", taskId, self.getPluginId())
 
         from objects.task import Task
-        from model import Model
         test1Task = Task.priorityTask(100, test1Plugin, [], taskId, self.getPluginId())
 
         taskManager.addTask(test1Task)

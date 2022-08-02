@@ -29,7 +29,7 @@ class Test3(Plugin):
         pass
 
     def expired(self, taskManager, taskParameters):
-        Log.newInfo("Test 3 plugin timed out", 0, self.getPluginId())
+        Log.newInfo("Test 3 plugin expired", 0, self.getPluginId())
 
     def test(self, taskId):
         pass

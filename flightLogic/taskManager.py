@@ -61,7 +61,6 @@ class TaskManager:
 
     This method is used to run the tasks in the queue.
     '''
-
     def __runTasks(self):
         latestTimeStamp = 0
         while True:
