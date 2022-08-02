@@ -448,14 +448,14 @@ class Task:
 
     This method is called if the task expires without executing because the time sensitivity has passed.
     '''
-    def expired(self):
+    def expired(self, taskManager):
         Log.newDebug(f'Task.expired() for task {self.__taskId}', self.__taskId, self.__pluginId)
 
         Log.newDebug(f'Setting task {self.__taskId} to inactive', self.__taskId, self.__pluginId)
         self.setActive(False, 0, self.getPluginId())
 
         Log.newDebug(f'Calling expired function for task {self.__taskId}', self.__taskId, self.__pluginId)
-        self.getPlugin().expired(self.__taskManager, self.__parameters)
+        self.getPlugin().expired(taskManager, self.__parameters)
 
     '''
     ----------------------------------------------------------------------------

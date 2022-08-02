@@ -22,7 +22,7 @@ class Blocker(Plugin):
 
     This method is used to start the plugin.
     '''
-    def start(self, taskId, taskManager):
+    def start(self, taskId, taskManager, taskParameters):
         from objects.task import Task
         from model import Model
         
@@ -30,5 +30,8 @@ class Blocker(Plugin):
 
         taskManager.addTask(blockerTask)
     
-    def terminate(self, taskId):
+    def terminate(self, taskId, taskManager, taskParameters):
+        pass
+
+    def expired(self, taskManager, taskParameters):
         pass

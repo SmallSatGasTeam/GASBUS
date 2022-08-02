@@ -110,7 +110,7 @@ class TaskManager:
                 task.getNextTask().setPreviousTask(previousTask, 0, 0)
             
             Log.newDebug(f'Calling {repr(task)} expired function', 0, 0)
-            task.expired()
+            task.expired(self)
         
         if task.getNextTask() is not None:
             self.__recursiveExpirationTimeCheck(task, task.getNextTask(), latestTimeStamp)
