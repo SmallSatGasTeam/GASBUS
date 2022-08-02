@@ -2,7 +2,7 @@
 
 The plugin is the basic unit of functionality in Flight Logic. Any functionality that is implemented on the satellite unique to this specific satellite should be encapsulated within a plugin.
 
-For information on the relationship between tasks and plugins and how to instantiate an instance of a plugin, see the repository [README](../../README.md#plugins-and-tasks).
+For information on the relationship between tasks and plugins and how to instantiate an instance of a plugin, see the [Flight Logic README](../README.md#plugins-and-tasks).
 
 ## Creating a new Plugin
 

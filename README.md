@@ -1,6 +1,6 @@
-# Main Flight Logic
+# GASBUS
 
-Flight Logic is the software that operates the GASBUS satellite. The core component of Flight Logic is a task manager that schedules and prioritizes the tasks that the satellite needs to do.
+The GASBUS satellite utilizes the Flight Logic software for all operational control. The core component of Flight Logic is a task manager that schedules and prioritizes the tasks that the satellite needs to do.
 
 Each task calls a specific plugin that gives the task its functionality. To add functionality to the satellite, the developer should create a plugin that implements the desired processes. After creating the plugin, a task must be created that calls the new plugin. After adding the task to the task manager, it will be called after all higher priority tasks have been finished.
 
@@ -10,64 +10,13 @@ Flight Logic also includes a model that is in charge of storing and retrieving a
 
 All logging on the satellite should be done using the designated log object. This organizes the log for sending in beacons and when requested for debugging purposes. It also ensures that the log is all stored in the database.
 
-## Usage
-
-Just call the taskManager.py from the command line.
-
-    python3 taskManager.py
-
-After doing that:
-
-- The task manager will create the priority and scheduled task queues
-- The model will create the database (if necessary) and prepare it for storing data
-- The task manager will schedule a task implementing the startup plugin
-- The discoverPlugins will run logging all plugins into the database for further use
-- The startup plugin will call all other plugins that should be performed on startup
-- The startup plugin will start the heartbeat
-
-## Plugins and Tasks
-
-The primary unit that provides functionality is the plugin. Plugins aren't called directly, but rather are encapsulated in tasks and then scheduled in the task manager. The reason for this is to allow the tasks to implement all of the functionality related to scheduling and for the plugin to focus primarily on the unique functionality for which the plugin is created.
-
-For information on creating plugins, see the [README in plugins](mainFlightLogic/plugins/README.md#creating-a-new-plugin).
-
-The process for instantiating a new plugin is simple:
-
-    from plugins.plugin import Plugin
-    newPlugin = Plugin.pluginFromClassName("[name of plugin]", runningTaskId, runningPluginId)
-
-If the desired plugin hasn't already been instantiated, this will call the discoverPlugins function to find and instantiate it. The proper plugin child class will then be returned.
-
-After creating the plugin object, to schedule the plugin, it must be encapsulated within a task. There are three ways to do this.
-
-1.  Add the task directly to the priority queue.
-
-        from objects.task import Task
-        newTask = Task.priorityTask(priority, newPlugin, pluginParameters, runningTaskId, runningPluginId, ?expirationTime, ?expirationDelta, ?shouldImportOnStartup)
-
-2.  Schedule the task for a certain number of seconds (called the delta) in the future compared to the current time.
-
-        from objects.task import Task
-        newTask = Task.scheduleTaskDelta(priority, newPlugin, delta, pluginParameters, runningTaskId, runningPluginId, ?expirationTime, ?expirationDelta, ?shouldImportOnStartup)
-
-3.  Schedule the task for a specific date and time in the future.
-
-        from objects.task import Task
-        newTask = Task.scheduleTaskTimeStamp(priority, newPlugin, scheduledRunTime, pluginParameters, runningTaskId, runningPluginId, ?expirationTime, ?expirationDelta, ?shouldImportOnStartup)
-
-After creating a task, it must then be added to the task manager. The task manager should be passed to each plugin. Add the task passing the new task to the addTask() function.
-
-    taskManager.addTask(newTask)
-
-The task will now run after its scheduled time after all higher priority tasks have run.
-
 ## Things to do
 
 Documentation
 
 - [x] Document the usage of plugins and tasks
 - [x] Revamp function comments and statements comments
-- [ ] README.md files in other directories
+- [x] README.md files in other directories
 - [ ] Add known issues to GitHub
 - [ ] Start wiki entries on GitHub
 - [x] Describe naming conventions of tasks and plugins
