@@ -14,48 +14,20 @@ All logging on the satellite should be done using the designated log object. Thi
 
 Documentation
 
-- [x] Document the usage of plugins and tasks
-- [x] Revamp function comments and statements comments
-- [x] README.md files in other directories
 - [ ] Add known issues to GitHub
 - [ ] Start wiki entries on GitHub
-- [x] Describe naming conventions of tasks and plugins
-- [x] Update README.md to include the new task call structure
 
 Task Manager
 
-- [x] Set up the functionality for time sensitivity
-- [x] Import active tasks on startup from database
-- [x] Rename timeSensitivity to expirationTime
-- [x] Add more debug logs
-
-Task
-
-- [x] Set start and end times for task run
-- [x] Add field shouldImportOnStartup for if the task should be imported if still active in the database on startup
-- [x] Redo visual functions for tasks
-- [x] Rename timeSensitivity to expirationTime
-- [x] Add more debug logs
-- [x] Ability to add task with expirationTime expressed as delta from scheduledRunTime (can be implemented as extra optional parameter)
-- [x] Set up task parameters
+- [ ] Set up constants in model to allow changes in startup plugin
 
 Plugin
 
-- [x] Add timeSensitivityPassed() to structure
-- [ ] Add test functionality to run on initial import
-- [x] Redo visual functions for plugins
-- [x] Rename timeSensitivityPassed to expired
 - [ ] In all plugins, add more debug logs
-- [x] Set up task parameters
 
-DiscoverPlugins
+Startup
 
-- [ ] Run the test function on each new plugin
-
-Log
-
-- [x] Create functions for Log.newErrorLog(), Log.newWarningLog(), Log.newInfoLog(), Log.newDebugLog()
-- [x] Set specific log levels for error, warning, info, and debug
+- [ ] Set up constants to change plugin names like heartbeat
 
 Unit Testing
 

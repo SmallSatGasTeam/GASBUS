@@ -45,3 +45,7 @@ class DiscoverPlugins(Plugin):
 
                 from model import Model
                 Model.retrieveOrCreatePlugin(fileName, className, taskId, pluginId)
+
+    def test(self, taskId):
+        pass
+    

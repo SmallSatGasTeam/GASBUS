@@ -53,6 +53,14 @@ Plugins are easy to create. Here is the basic format.
         def expired(self, taskManager, taskParameters):
             pass
 
+        '''
+        public test(taskId: integer):
+
+        This method is used to test the plugin.
+        '''
+        def test(self, taskId):
+            pass
+
 As we can see, most of the common plugin functionality is inherited from the Plugin class. This means that we can focus on the unique functionality when developing our plugins.
 
 ## Plugin Properties

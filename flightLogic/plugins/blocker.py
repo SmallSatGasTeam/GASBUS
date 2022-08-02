@@ -35,3 +35,6 @@ class Blocker(Plugin):
 
     def expired(self, taskManager, taskParameters):
         pass
+
+    def test(self, taskId):
+        pass

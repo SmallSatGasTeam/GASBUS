@@ -34,6 +34,9 @@ class Plugin:
 
         Log.newDebug(f'{self} initialized', 0, 0)
 
+        Log.newDebug(f'Testing plugin {self}', 0, 0)
+        self.test(0)
+
     '''
     public Plugin.newPlugin(identifier: string) -> Plugin
 
@@ -165,7 +168,7 @@ class Plugin:
     These methods are used to perform the plugin's functionality.
     ----------------------------------------------------------------------------
 
-    public start()
+    public start(taskId: integer, taskManager: taskManager, taskParameters: any[])
 
     This method is used to start the plugin.
     '''
@@ -173,7 +176,7 @@ class Plugin:
         Log.newError("No startTask function defined for child task", taskId, self.__pluginId)
     
     '''
-    public terminate()
+    public terminate(taskId: integer, taskManager: taskManager, taskParameters: any[])
 
     This method is used to clean up the plugin after execution.
     '''
@@ -181,12 +184,18 @@ class Plugin:
         Log.newError("No terminate function defined for child task", taskId, self.__pluginId)
 
     '''
-    public timeSensitivityPassed()
+    public expired(taskManager: taskManager, taskParameters: any[])
 
     This method is called if the task is removed from the priority queue because it has waited too long to run.
     '''
     def expired(self, taskManager, taskParameters):
         Log.newError("No expired function defined for child task", 0, self.__pluginId)
+
+    '''
+    public test(taskId: integer, taskManager: taskManager, taskParameters: any[])
+    '''
+    def test(self, taskId):
+        Log.newError("No test function defined for child task", taskId, self.__pluginId)
 
     '''
     ----------------------------------------------------------------------------

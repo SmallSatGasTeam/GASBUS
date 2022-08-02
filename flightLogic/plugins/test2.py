@@ -30,3 +30,7 @@ class Test2(Plugin):
     
     def expired(self, taskManager, taskParameters):
         pass
+
+    def test(self, taskId):
+        pass
+    

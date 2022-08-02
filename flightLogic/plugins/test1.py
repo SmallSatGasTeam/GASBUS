@@ -46,9 +46,15 @@ class Test1(Plugin):
 
         test2Task5 = Task.scheduleTaskDelta(200, test2Plugin, 8, [200, '8 seconds'], taskId, self.getPluginId())
         taskManager.addTask(test2Task5)
+
+        test2Task6 = Task.scheduleTaskDelta(200, test2Plugin, 20, [200, '20 seconds'], taskId, self.getPluginId())
+        taskManager.addTask(test2Task6)
     
     def terminate(self, taskId, taskManager, taskParameters):
         pass
 
     def expired(self, taskManager, taskParameters):
+        pass
+
+    def test(self, taskId):
         pass
