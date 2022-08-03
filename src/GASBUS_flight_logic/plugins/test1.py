@@ -32,21 +32,27 @@ class Test1(Plugin):
         from objects.task import Task
         from model import Model
 
+        # Test 2 immediate
         test2Task = Task.priorityTask(200, test2Plugin, [200, 'immediate'], taskId, self.getPluginId())
         taskManager.addTask(test2Task)
 
+        # Test 2 delayed 7 seconds
         test2Task2 = Task.scheduleTaskDelta(200, test2Plugin, 7, [200, '7 seconds'], taskId, self.getPluginId())
         taskManager.addTask(test2Task2)
 
+        # Test 2 delayed 6 seconds
         test2Task3 = Task.scheduleTaskDelta(200, test2Plugin, 6, [200, '6 seconds'], taskId, self.getPluginId())
         taskManager.addTask(test2Task3)
 
+        # Test 2 delayed 5 seconds
         test2Task4 = Task.scheduleTaskDelta(200, test2Plugin, 5, [200, '5 seconds'], taskId, self.getPluginId())
         taskManager.addTask(test2Task4)
 
+        # Test 2 delayed 8 seconds
         test2Task5 = Task.scheduleTaskDelta(200, test2Plugin, 8, [200, '8 seconds'], taskId, self.getPluginId())
         taskManager.addTask(test2Task5)
 
+        # Test 2 delayed 20 seconds
         test2Task6 = Task.scheduleTaskDelta(200, test2Plugin, 20, [200, '20 seconds'], taskId, self.getPluginId())
         taskManager.addTask(test2Task6)
     

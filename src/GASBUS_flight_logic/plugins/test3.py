@@ -31,6 +31,10 @@ class Test3(Plugin):
     def expired(self, taskManager, taskParameters):
         Log.newInfo("Test 3 plugin expired", 0, self.getPluginId())
 
+        from objects.task import Task
+        newTask3 = Task.priorityTask(200, self, [200, 'immediate'], 0, self.getPluginId())
+        taskManager.addTask(newTask3)
+
     def test(self, taskId):
         pass
     

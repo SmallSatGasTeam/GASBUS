@@ -27,6 +27,7 @@ class Startup(Plugin):
 
         # Adding tasks for testing purposes
 
+        # Test1
         test1Plugin = Plugin.pluginFromClassName("Test1", taskId, self.getPluginId())
 
         from objects.task import Task
@@ -34,17 +35,21 @@ class Startup(Plugin):
 
         taskManager.addTask(test1Task)
 
+        # Test2
         test2Plugin = Plugin.pluginFromClassName("Test2", taskId, self.getPluginId())
 
         test2Task200 = Task.priorityTask(200, test2Plugin, [200, 'immediate'], taskId, self.getPluginId())
         taskManager.addTask(test2Task200)
         
+        # Test2 (priority 300)
         test2Task300 = Task.priorityTask(300, test2Plugin, [300, 'immediate'], taskId, self.getPluginId())
         taskManager.addTask(test2Task300)
         
+        # Test2 (priority 500)
         test2Task500 = Task.priorityTask(500, test2Plugin, [500, 'immediate'], taskId, self.getPluginId())
         taskManager.addTask(test2Task500)
         
+        # Test2 (priority 400)
         test2Task400 = Task.priorityTask(400, test2Plugin, [400, 'immediate'], taskId, self.getPluginId())
         taskManager.addTask(test2Task400)
 
