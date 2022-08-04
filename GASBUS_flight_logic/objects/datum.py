@@ -10,9 +10,6 @@ recordTimeStamp is an integer available for getting.
 '''
 
 class Datum:
-    # class variables
-    data = [] # a list of all instantiated data
-
     '''
     ----------------------------------------------------------------------------
     Constructors
@@ -27,8 +24,6 @@ class Datum:
         self.__sensor = sensor
         self.__datum = datum
         self.__recordTimeStamp = recordTimeStamp
-
-        Datum.data.append(self)
 
     '''
     public Datum.newDatum(sensor: integer, datum: string, recordTimeStamp: integer, runTaskId: integer, runPluginId: integer) -> Datum
@@ -45,28 +40,11 @@ class Datum:
     '''
     public Datum.datumWithId(datumId: integer, sensor: integer, datum: string, recordTimeStamp: integer) -> Datum
 
-    This is the class method for creating a new datum object for a datum that has already been created in the database. If a datum with the given datumId already exists, it will be returned instead of creating a new datum object to avoid synchronization issues. Otherwise, a new datum object will be created.
+    This is the class method for creating a new datum object for a datum that has already been created in the database.
     '''
     @classmethod
     def datumWithId(cls, datumId, sensor, datum, recordTimeStamp):
-        # check if a datum with the given datumId already exists to avoid duplicates and synchronization issues
-        datum = cls.__checkDataForId(datumId)
-        if datum is not None:
-            return datum
-        
         return cls(datumId, sensor, datum, recordTimeStamp)
-
-    '''
-    private static Datum.__checkDataForId(datumId: integer) -> Datum | None
-
-    Checks to see if a datum with a given datumId has already been created. If it has, it will be returned.
-    '''
-    @staticmethod
-    def __checkDataForId(datumId):
-        for datum in Datum.data:
-            if datum.getDatumId() == datumId:
-                return datum
-        return None
 
     '''
     ----------------------------------------------------------------------------

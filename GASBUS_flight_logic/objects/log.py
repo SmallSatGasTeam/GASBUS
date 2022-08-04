@@ -15,16 +15,14 @@ echoMarker is a boolean available for getting and setting.
 
 class Log:
     # class variables
-    logs = [] # a list of all instantiated logs
-
     ERROR_LEVEL = 100
     WARNING_LEVEL = 200
     INFO_LEVEL = 300
     DEBUG_LEVEL = 400
 
-    PRINT_ERROR = True
-    PRINT_WARNING = True
-    PRINT_INFO = True
+    PRINT_ERROR = False
+    PRINT_WARNING = False
+    PRINT_INFO = False
     PRINT_DEBUG = False
 
     '''
@@ -45,8 +43,6 @@ class Log:
         self.__timeStamp = timeStamp
         self.__sentMarker = sentMarker
         self.__echoMarker = echoMarker
-
-        Log.logs.append(self)
 
     '''
     public Log.newLog(message: string, taskId: integer, pluginId: integer, level: integer) -> Log
@@ -79,15 +75,10 @@ class Log:
     '''
     public Log.logWithId(logId: integer, message: string, taskId: integer, pluginId: integer, level: integer, timeStamp: integer, sentMarker: boolean, echoMarker: boolean) -> Log
 
-    This is the class method for creating a new log object for a log that has already been created in the database. If a log with the given logId already exists, it will be returned instead of creating a new log object to avoid synchronization issues. Otherwise, a new log object will be created.
+    This is the class method for creating a new log object for a log that has already been created in the database.
     '''
     @classmethod
     def logWithId(cls, logId, message, taskId, pluginId, level, timeStamp, sentMarker, echoMarker):
-        # check if a log with the same logId already exists to avoid duplicates and syncronization issues
-        log = cls.__checkLogsForId(logId)
-        if log is not None:
-            return log
-
         return cls(logId, message, taskId, pluginId, level, timeStamp, sentMarker, echoMarker)
 
     '''
@@ -125,18 +116,6 @@ class Log:
     @classmethod
     def newDebug(cls, message, taskId, pluginId):
         return cls.newLog(message, taskId, pluginId, cls.DEBUG_LEVEL)
-
-    '''
-    private static Log.__checkLogsForId(logId: integer) -> Log | None
-
-    Checks to see if a log with a given logId has already been created. If it has, it will be returned.
-    '''
-    @staticmethod
-    def __checkLogsForId(logId):
-        for log in Log.logs:
-            if log.getLogId() == logId:
-                return log
-        return None
 
     '''
     ----------------------------------------------------------------------------

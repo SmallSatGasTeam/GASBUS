@@ -25,9 +25,6 @@ TODO: add task methods
 
 from objects.log import Log
 class Task:
-    # class variables
-    tasks = [] # a list of all instantiated tasks
-
     '''
     ----------------------------------------------------------------------------
     Constructors
@@ -61,19 +58,19 @@ class Task:
         self.__previousTask = None
         self.__nextTask = None
 
-        Task.tasks.append(self)
+        # Task.tasks.append(self)
 
-        Log.newDebug(f'Setting up previous and next tasks for task {taskId}', 0, 0)
+        # Log.newDebug(f'Setting up previous and next tasks for task {taskId}', 0, 0)
 
-        if previousTaskId != -1:
-            self.__previousTask = Task.__checkTasksForId(previousTaskId)
-            if self.__previousTask == None:
-                self.__previousTask = Model.retrieveTaskById(previousTaskId, 0, 0)
+        # if previousTaskId != -1:
+        #     self.__previousTask = Task.__checkTasksForId(previousTaskId)
+        #     if self.__previousTask == None:
+        #         self.__previousTask = Model.retrieveTaskById(previousTaskId, 0, 0)
         
-        if nextTaskId != -1:
-            self.__nextTask = Task.__checkTasksForId(nextTaskId)
-            if self.__nextTask == None:
-                self.__nextTask = Model.retrieveTaskById(nextTaskId, 0, 0)
+        # if nextTaskId != -1:
+        #     self.__nextTask = Task.__checkTasksForId(nextTaskId)
+        #     if self.__nextTask == None:
+        #         self.__nextTask = Model.retrieveTaskById(nextTaskId, 0, 0)
 
         Log.newDebug(f'Task {repr(self)} instantiated.', 0, 0)
 
@@ -115,17 +112,10 @@ class Task:
     '''
     public Task.taskWithId(taskId: integer, priority: integer, pluginId: integer, previousTaskId: integer, nextTaskId: integer, addToQueueTime: integer, scheduledRunTime: integer, startTime: integer, endTime: integer, active: boolean, runTaskId: integer, runPluginId: integer) -> Task
 
-    This is the class method for creating a new task object for a task that has already been created in the database. If a task with the given taskId already exists, it will be returned instead of creating a new one to avoid synchronization issues. Otherwise, a new task will be created.
+    This is the class method for creating a new task object for a task that has already been created in the database.
     '''
     @classmethod
     def taskWithId(cls, taskId, priority, pluginId, previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, parameters, runTaskId, runPluginId, shouldImportOnStart=True):
-        Log.newDebug(f'Task.taskWithId run... checking for instantiated tasks with same id', runTaskId, runPluginId)
-
-        # check if a task with the given taskId already exists to avoid duplicates and synchronization issues
-        task = cls.__checkTasksForId(taskId)
-        if task is not None:
-            return task
-
         Log.newDebug(f'Task.taskWithId run... setting up task in model', runTaskId, runPluginId)
         from model import Model # import statement here to avoid circular import
         
@@ -219,18 +209,6 @@ class Task:
         Log.newDebug(f'Sending task {taskId} to Task constructor', runTaskId, runPluginId)
         return cls(taskId, priority, plugin.getPluginId(), previousTaskId, nextTaskId, addToQueueTime, scheduledRunTime, expirationTime, startTime, endTime, active, shouldImportOnStart, parameters, plugin)
 
-    '''
-    private static Task.__checkTasksForId(taskId: integer) -> Task | None
-
-    Checks to see if a task with the given taskId has already been created. If it has, it will be returned.
-    '''
-    @staticmethod
-    def __checkTasksForId(taskId):
-        for task in Task.tasks:
-            if task.getTaskId() == taskId:
-                return task
-        return None
-
     # TODO: add static get task from id
 
     '''
@@ -295,17 +273,6 @@ class Task:
     These methods are used to set the values of the task object.
     ----------------------------------------------------------------------------
     '''
-    def setPriority(self, priority, runTaskId, runPluginId):
-        # update the priority in the model
-        from model import Model # import statement here to avoid circular import
-        if Model.updateTaskPriority(self.__taskId, priority, runTaskId, runPluginId):
-            self.__priority = priority
-            return True
-
-            # TODO: adjust priority queue
-
-        return False
-
     def setPreviousTaskId(self, previousTaskId, runTaskId, runPluginId):
         # update the previousTaskId in the model
         from model import Model # import statement here to avoid circular import

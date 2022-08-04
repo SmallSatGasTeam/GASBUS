@@ -9,9 +9,6 @@ sendTime is an integer available for getting and setting.
 '''
 
 class Packet:
-    # class variables
-    packets = [] # a list of all instantiated packets
-
     '''
     ----------------------------------------------------------------------------
     Constructors
@@ -25,8 +22,6 @@ class Packet:
         self.__packetId = packetId
         self.__data = data
         self.__sendTime = sendTime
-
-        Packet.packets.append(self)
 
     '''
     public Packet.newPacket(data: string, sendTime: integer) -> Packet
@@ -43,28 +38,12 @@ class Packet:
     '''
     public Packet.packetWithId(packetId: integer, data: string, sendTime: integer) -> Packet
 
-    This is the class method for creating a new packet object for a packet that has already been created in the database. If a packet with the given packetId already exists, it will be returned instead of creating a new packet object to avoid synchronization issues. Otherwise, a new packet object will be created.
+    This is the class method for creating a new packet object for a packet that has already been created in the database.
     '''
     @classmethod
     def packetWithId(cls, packetId, data, sendTime):
-        # check if a packet with the given packetId already exists to avoid duplicates and synchronization issues
-        packet = cls.__checkPacketsForId(packetId)
-        if packet is not None:
-            return packet
 
         return cls(packetId, data, sendTime)
-
-    '''
-    private static Packet.__checkPacketsForId(packetId: integer) -> Packet | None
-
-    Checks to see if a datum with a given datumId has already been created. If it has, it will be returned.
-    '''
-    @staticmethod
-    def __checkPacketsForId(packetId):
-        for packet in Packet.packets:
-            if packet.getPacketId() == packetId:
-                return packet
-        return None
 
     '''
     ----------------------------------------------------------------------------

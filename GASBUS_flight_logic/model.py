@@ -6,7 +6,6 @@ The model module contains the database connection and the database functions. An
 This module contains only static methods meaning that it cannot be instantiated.
 '''
 
-from pydoc import classname
 import sqlite3
 from sqlite3 import Error
 from datetime import datetime
@@ -14,7 +13,6 @@ from objects.log import Log
 from objects.datum import Datum
 from objects.packet import Packet
 from objects.task import Task
-from plugins.plugin import Plugin
 
 class Model:
     '''
@@ -158,7 +156,7 @@ class Model:
     Retrieves all log entries from the database between the passed start and end times.
     '''
     @staticmethod
-    def retrieveLogsByTime(startTime, endTime, runTaskId, runPluginId):
+    def retrieveLogsByTime(startTime, endTime, runTaskId, runPluginId, printLogs=False):
         connection = Model.__check_connection(runTaskId, runPluginId)
         if connection and Model.__checkLogsTable(connection):
             # database query
@@ -313,7 +311,7 @@ class Model:
     def createDatum(sensor, datum, recordTimestamp, runTaskId, runPluginId):
         # set up the connection
         connection = Model.__check_connection(runTaskId, runPluginId)
-        if connection and Model.__checkLogsTable(connection):
+        if connection and Model.__checkDataTable(connection):
             cursor = connection.cursor()
 
             # insert the new datum into the database
@@ -751,28 +749,6 @@ class Model:
                 tasks.append(Task.taskWithId(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8], result[9], result[10], parameters, runPluginId, runTaskId, shouldImportOnStart=result[11]))
 
             return tasks
-
-        return False
-
-    '''
-    public static updateTaskPriority(taskId: integer, priority: integer, runTaskId: integer, runPluginId: integer) -> boolean
-
-    Updates the priority of a task.
-    '''
-    @staticmethod
-    def updateTaskPriority(taskId, priority, runTaskId, runPluginId):
-        connection = Model.__check_connection(runTaskId, runPluginId)
-        if connection and Model.__checkTasksTable(connection):
-            # database query
-            cursor = connection.cursor()
-            cursor.execute("""UPDATE tasks
-                                SET priority = ?
-                                WHERE taskId = ?""", (priority, taskId))
-            connection.commit()
-
-            Model.__close_connection(connection)
-
-            return True
 
         return False
     
