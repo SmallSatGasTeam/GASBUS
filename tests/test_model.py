@@ -293,8 +293,6 @@ class TestModel:
         self.deleteDatabase()
     
     def test_updateLogEchoMarker(self):
-        from GASBUS_flight_logic.objects.log import Log
-
         # Test the ability of the model to update a log's echo marker.
         (logId, _) = Model.createLog('test echo marker', -10, -10, 0)
 
@@ -747,7 +745,7 @@ class TestModel:
         assert tasks[0].getParameters() == ['']
 
         # Test more tasks
-        for i in range(100):
+        for i in range(10):
             addToQueueTime = Model.createTimeStamp()
             scheduledRunTime = Model.createTimeStamp() + i
             expirationTime = Model.createTimeStamp() + 2 * i + 1
@@ -764,4 +762,378 @@ class TestModel:
             assert taskInTasks == True
 
         # Clean up.
+        self.deleteDatabase()
+    
+    def test_retrieveTaskByAddToQueueTime(self):
+        # Test the ability of the model to retrieve a task by add to queue time.
+        addToQueueTime = Model.createTimeStamp()
+        taskId = Model.createTask(0, -10, -1, -1, addToQueueTime, -1, -1, -1, -1, True, False, [], -10, -10)
+
+        tasks = Model.retrieveTasksByAddToQueueTime(addToQueueTime - 1, addToQueueTime, -10, -10)
+
+        assert tasks[0].getTaskId() == taskId
+        assert tasks[0].getPriority() == 0
+        assert tasks[0].getPluginId() == -10
+        assert tasks[0].getPreviousTaskId() == -1
+        assert tasks[0].getNextTaskId() == -1
+        assert tasks[0].getAddToQueueTime() == addToQueueTime
+        assert tasks[0].getScheduledRunTime() == -1
+        assert tasks[0].getExpirationTime() == -1
+        assert tasks[0].getStartTime() == -1
+        assert tasks[0].getEndTime() == -1
+        assert tasks[0].getActive() == True
+        assert tasks[0].getShouldImportOnStart() == False
+        assert tasks[0].getParameters() == ['']
+
+        # Test more tasks
+        for i in range(10):
+            addToQueueTime = Model.createTimeStamp()
+            scheduledRunTime = Model.createTimeStamp() + i
+            expirationTime = Model.createTimeStamp() + 2 * i + 1
+            taskId = Model.createTask(i, i - 10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+            tasks = Model.retrieveTasksByAddToQueueTime(addToQueueTime - 1, addToQueueTime, -10, -10)
+
+            taskInTasks = False
+
+            for task in tasks:
+                if task.getTaskId() == taskId:
+                    taskInTasks = True
+
+            assert taskInTasks == True
+
+        # Clean up.
+        self.deleteDatabase()
+
+    def test_retrieveTasksByScheduledRunTime(self):
+        # Test the ability of the model to retrieve tasks by scheduled run time.
+        addToQueueTime = Model.createTimeStamp()
+        scheduledRunTime = Model.createTimeStamp()
+        taskId = Model.createTask(0, -10, -1, -1, addToQueueTime, scheduledRunTime, -1, -1, -1, True, False, [], -10, -10)
+
+        tasks = Model.retrieveTasksByScheduledRunTime(scheduledRunTime - 1, scheduledRunTime, -10, -10)
+
+        assert tasks[0].getTaskId() == taskId
+        assert tasks[0].getPriority() == 0
+        assert tasks[0].getPluginId() == -10
+        assert tasks[0].getPreviousTaskId() == -1
+        assert tasks[0].getNextTaskId() == -1
+        assert tasks[0].getAddToQueueTime() == addToQueueTime
+        assert tasks[0].getScheduledRunTime() == scheduledRunTime
+        assert tasks[0].getExpirationTime() == -1
+        assert tasks[0].getStartTime() == -1
+        assert tasks[0].getEndTime() == -1
+        assert tasks[0].getActive() == True
+        assert tasks[0].getShouldImportOnStart() == False
+        assert tasks[0].getParameters() == ['']
+
+        # Test more tasks
+        for i in range(10):
+            addToQueueTime = Model.createTimeStamp()
+            scheduledRunTime = Model.createTimeStamp() + i
+            expirationTime = Model.createTimeStamp() + 2 * i + 1
+            taskId = Model.createTask(i, i - 10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+            tasks = Model.retrieveTasksByScheduledRunTime(scheduledRunTime - 1, scheduledRunTime, -10, -10)
+
+            taskInTasks = False
+
+            for task in tasks:
+                if task.getTaskId() == taskId:
+                    taskInTasks = True
+
+            assert taskInTasks == True
+
+        # Clean up.
+        self.deleteDatabase()
+
+    def test_retrieveTasksByStartTime(self):
+        # Test the ability of the model to retrieve tasks by start time.
+        addToQueueTime = Model.createTimeStamp()
+        scheduledRunTime = Model.createTimeStamp()
+        startTime = Model.createTimeStamp()
+        taskId = Model.createTask(0, -10, -1, -1, addToQueueTime, scheduledRunTime, -1, startTime, -1, True, False, [], -10, -10)
+
+        tasks = Model.retrieveTasksByStartTime(startTime - 1, startTime, -10, -10)
+
+        assert tasks[0].getTaskId() == taskId
+        assert tasks[0].getPriority() == 0
+        assert tasks[0].getPluginId() == -10
+        assert tasks[0].getPreviousTaskId() == -1
+        assert tasks[0].getNextTaskId() == -1
+        assert tasks[0].getAddToQueueTime() == addToQueueTime
+        assert tasks[0].getScheduledRunTime() == scheduledRunTime
+        assert tasks[0].getExpirationTime() == -1
+        assert tasks[0].getStartTime() == startTime
+        assert tasks[0].getEndTime() == -1
+        assert tasks[0].getActive() == True
+        assert tasks[0].getShouldImportOnStart() == False
+        assert tasks[0].getParameters() == ['']
+
+        # Test more tasks
+        for i in range(10):
+            addToQueueTime = Model.createTimeStamp()
+            scheduledRunTime = Model.createTimeStamp() + i
+            startTime = Model.createTimeStamp() + 2 * i + 1
+            taskId = Model.createTask(i, i - 10, -1, -1, addToQueueTime, scheduledRunTime, -1, startTime, -1, True, False, [], -10, -10)
+
+            tasks = Model.retrieveTasksByStartTime(startTime - 1, startTime, -10, -10)
+
+            taskInTasks = False
+
+            for task in tasks:
+                if task.getTaskId() == taskId:
+                    taskInTasks = True
+
+            assert taskInTasks == True
+
+        # Clean up.
+        self.deleteDatabase()
+
+    def test_retrieveTasksByActive(self):
+        # Test the ability of the model to retrieve tasks by active.
+        addToQueueTime = Model.createTimeStamp()
+        scheduledRunTime = Model.createTimeStamp()
+        expirationTime = Model.createTimeStamp()
+        taskId = Model.createTask(0, -10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+        tasks = Model.retrieveTasksByActive(True, -10, -10)
+
+        assert tasks[0].getTaskId() == taskId
+        assert tasks[0].getPriority() == 0
+        assert tasks[0].getPluginId() == -10
+        assert tasks[0].getPreviousTaskId() == -1
+        assert tasks[0].getNextTaskId() == -1
+        assert tasks[0].getAddToQueueTime() == addToQueueTime
+        assert tasks[0].getScheduledRunTime() == scheduledRunTime
+        assert tasks[0].getExpirationTime() == expirationTime
+        assert tasks[0].getStartTime() == -1
+        assert tasks[0].getEndTime() == -1
+        assert tasks[0].getActive() == True
+        assert tasks[0].getShouldImportOnStart() == False
+        assert tasks[0].getParameters() == ['']
+
+        # Test more tasks
+        for i in range(10):
+            addToQueueTime = Model.createTimeStamp()
+            scheduledRunTime = Model.createTimeStamp() + i
+            expirationTime = Model.createTimeStamp() + 2 * i + 1
+            taskId = Model.createTask(i, i - 10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+            tasks = Model.retrieveTasksByActive(True, -10, -10)
+
+            taskInTasks = False
+
+            for task in tasks:
+                if task.getTaskId() == taskId:
+                    taskInTasks = True
+
+            assert taskInTasks == True
+
+        # Clean up.
+        self.deleteDatabase()
+
+    def test_updateTaskPreviousId(self):
+        # Test the ability of the model to update the previous task id.
+        addToQueueTime = Model.createTimeStamp()
+        scheduledRunTime = Model.createTimeStamp()
+        expirationTime = Model.createTimeStamp()
+        taskId = Model.createTask(0, -10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+        assert Model.retrieveTaskById(taskId, -10, -10).getPreviousTaskId() == -1
+
+        Model.updateTaskPreviousTaskId(taskId, -2, -10, -10)
+
+        assert Model.retrieveTaskById(taskId, -10, -10).getPreviousTaskId() == -2
+
+        # Test more tasks
+        for i in range(100):
+            addToQueueTime = Model.createTimeStamp()
+            scheduledRunTime = Model.createTimeStamp() + i
+            expirationTime = Model.createTimeStamp() + 2 * i + 1
+            taskId = Model.createTask(i, i - 10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+            assert Model.retrieveTaskById(taskId, -10, -10).getPreviousTaskId() == -1
+
+            Model.updateTaskPreviousTaskId(taskId, i - 2, -10, -10)
+
+            assert Model.retrieveTaskById(taskId, -10, -10).getPreviousTaskId() == i - 2
+
+        # Clean up.
+        self.deleteDatabase()
+
+    def test_updateTaskScheduledRunTime(self):
+        # Test the ability of the model to update the scheduled run time.
+        addToQueueTime = Model.createTimeStamp()
+        scheduledRunTime = Model.createTimeStamp()
+        expirationTime = Model.createTimeStamp()
+        taskId = Model.createTask(0, -10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+        assert Model.retrieveTaskById(taskId, -10, -10).getScheduledRunTime() == scheduledRunTime
+
+        Model.updateTaskScheduledRunTime(taskId, scheduledRunTime + 1, -10, -10)
+
+        assert Model.retrieveTaskById(taskId, -10, -10).getScheduledRunTime() == scheduledRunTime + 1
+
+        # Test more tasks
+        for i in range(100):
+            addToQueueTime = Model.createTimeStamp()
+            scheduledRunTime = Model.createTimeStamp() + i
+            expirationTime = Model.createTimeStamp() + 2 * i + 1
+            taskId = Model.createTask(i, i - 10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+            assert Model.retrieveTaskById(taskId, -10, -10).getScheduledRunTime() == scheduledRunTime
+
+            Model.updateTaskScheduledRunTime(taskId, scheduledRunTime + 1, -10, -10)
+
+            assert Model.retrieveTaskById(taskId, -10, -10).getScheduledRunTime() == scheduledRunTime + 1
+
+        # Clean up.
+        self.deleteDatabase()
+    
+    def test_updateTaskStartTime(self):
+        # Test the ability of the model to update the start time.
+        addToQueueTime = Model.createTimeStamp()
+        scheduledRunTime = Model.createTimeStamp()
+        expirationTime = Model.createTimeStamp()
+        taskId = Model.createTask(0, -10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+        assert Model.retrieveTaskById(taskId, -10, -10).getStartTime() == -1
+
+        startTime = Model.createTimeStamp()
+        Model.updateTaskStartTime(taskId,  startTime, -10, -10)
+
+        assert Model.retrieveTaskById(taskId, -10, -10).getStartTime() == startTime
+
+        # Test more tasks
+        for i in range(100):
+            addToQueueTime = Model.createTimeStamp()
+            scheduledRunTime = Model.createTimeStamp() + i
+            expirationTime = Model.createTimeStamp() + 2 * i + 1
+            taskId = Model.createTask(i, i - 10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+            assert Model.retrieveTaskById(taskId, -10, -10).getStartTime() == -1
+
+            startTime = Model.createTimeStamp()
+            Model.updateTaskStartTime(taskId,  startTime, -10, -10)
+
+            assert Model.retrieveTaskById(taskId, -10, -10).getStartTime() == startTime
+
+        # Clean up.
+        self.deleteDatabase()
+    
+    def test_updateTaskEndTime(self):
+        # Test the ability of the model to update the end time.
+        addToQueueTime = Model.createTimeStamp()
+        scheduledRunTime = Model.createTimeStamp()
+        expirationTime = Model.createTimeStamp()
+        taskId = Model.createTask(0, -10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+        assert Model.retrieveTaskById(taskId, -10, -10).getEndTime() == -1
+
+        endTime = Model.createTimeStamp()
+        Model.updateTaskEndTime(taskId,  endTime, -10, -10)
+
+        assert Model.retrieveTaskById(taskId, -10, -10).getEndTime() == endTime
+
+        # Test more tasks
+        for i in range(100):
+            addToQueueTime = Model.createTimeStamp()
+            scheduledRunTime = Model.createTimeStamp() + i
+            expirationTime = Model.createTimeStamp() + 2 * i + 1
+            taskId = Model.createTask(i, i - 10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+            assert Model.retrieveTaskById(taskId, -10, -10).getEndTime() == -1
+
+            endTime = Model.createTimeStamp()
+            Model.updateTaskEndTime(taskId,  endTime, -10, -10)
+
+            assert Model.retrieveTaskById(taskId, -10, -10).getEndTime() == endTime
+
+        # Clean up.
+        self.deleteDatabase()
+
+    def test_updateTaskActive(self):
+        # Test the ability of the model to update the active status.
+        addToQueueTime = Model.createTimeStamp()
+        scheduledRunTime = Model.createTimeStamp()
+        expirationTime = Model.createTimeStamp()
+        taskId = Model.createTask(0, -10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+        assert Model.retrieveTaskById(taskId, -10, -10).getActive() == True
+
+        Model.updateTaskActive(taskId, False, -10, -10)
+
+        assert Model.retrieveTaskById(taskId, -10, -10).getActive() == False
+
+        # Test more tasks
+        for i in range(100):
+            addToQueueTime = Model.createTimeStamp()
+            scheduledRunTime = Model.createTimeStamp() + i
+            expirationTime = Model.createTimeStamp() + 2 * i + 1
+            taskId = Model.createTask(i, i - 10, -1, -1, addToQueueTime, scheduledRunTime, expirationTime, -1, -1, True, False, [], -10, -10)
+
+            assert Model.retrieveTaskById(taskId, -10, -10).getActive() == True
+
+            Model.updateTaskActive(taskId, False, -10, -10)
+
+            assert Model.retrieveTaskById(taskId, -10, -10).getActive() == False
+
+        # Clean up.
+        self.deleteDatabase()
+
+    def test__checkPluginsTable(self):
+        # Test the ability of the model to check if the plugins table exists.
+        connection1 = Model._Model__check_connection(-10, -10)
+        assert Model._Model__checkPluginsTable(connection1) == True
+
+        cursor1 = connection1.cursor()
+        cursor1.execute('SELECT name FROM sqlite_master WHERE type="table" AND name="plugins"')
+        result = cursor1.fetchall()
+
+        assert result == [('plugins',)]
+        connection1.close()
+
+        # Test to make sure there is only one plugins table after calling the function a second time
+        connection2 = Model._Model__check_connection(-10, -10)
+        assert Model._Model__checkPluginsTable(connection2) == True
+        cursor2 = connection2.cursor()
+        cursor2.execute('SELECT name FROM sqlite_master WHERE type="table" AND name="plugins"')
+        result = cursor2.fetchall()
+
+        assert result == [('plugins',)]
+
+        # Clean up.
+        connection2.close()
+        self.deleteDatabase()
+
+    def test_createPlugin(self):
+        # Test the ability of the model to create a plugin.
+        pluginId = Model.createPlugin('test', 'Test', -10, -10)
+        assert type(pluginId) == int
+
+        # Test the plugin is in line with the database.
+        connection = Model._Model__check_connection(-10, -10)
+        cursor = connection.cursor()
+        cursor.execute('SELECT pluginId, fileName, className FROM plugins WHERE pluginId = ?', (pluginId,))
+        result = cursor.fetchall()
+
+        assert result == [(pluginId, 'test', 'Test')]
+
+        assumedResult = [(pluginId, 'test', 'Test')]
+
+        # Test more plugins
+        for i in range(100):
+            pluginId = Model.createPlugin('test' + str(i), 'Test' + str(i), -10, -10)
+            assert type(pluginId) == int
+
+            assumedResult.append((pluginId, 'test' + str(i), 'Test' + str(i)))
+
+        cursor.execute('SELECT pluginId, fileName, className FROM plugins')
+        result = cursor.fetchall()
+
+        assert result == assumedResult
+
+        # Clean up.
+        connection.close()
         self.deleteDatabase()
